@@ -1,0 +1,8 @@
+# IDE
+.alm
+
+# Output
+lib
+
+# Node
+node_modules

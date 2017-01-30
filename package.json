@@ -1,0 +1,11 @@
+{
+  "name": "yester",
+  "version": "0.0.0",
+  "description": "A simple client js routing solution",
+  "main": "lib/index.js",
+  "typings": "lib/index",
+  "scripts": {
+  },
+  "author": "",
+  "license": "MIT"
+}
