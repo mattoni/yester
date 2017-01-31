@@ -86,4 +86,50 @@ If you want such matching use the greedy `**` wildcard e.g.
 
 > The difference between `**` vs. `*` is only really evident when you want to match something inside i.e. `/*/c` (inside) vs. `/c/*` (end). In an end position they both behave the same.
 
+## Handlers 
 
+You can specify `beforeEnter`, `enter`, `beforeLeave` handlers. (Of course, you have TypeScript to guide you).
+
+> Path: if `window.location.hash`:`#/foo`, in our lingo `path` is `/foo`.
+
+Example of all these handlers: 
+
+```js
+'/foo/' : {
+  beforeEnter: ({oldPath, newPath, params}) => void | Promise<{ redirect: string, replace?: boolean }>,
+  enter: ({oldPath, newPath, params}) => void,
+  beforeLeave: ({oldPath, newPath}): void | false | Promise<{ redirect: string, replace?: boolean }>,
+}
+```
+
+Lets look at these one by one.
+
+### `beforeEnter` 
+Triggered before calling `enter`. This is your chance to go ahead and redirect the user if you want (e.g. if they are not logged in), just return `Promise.resolve({redirect:'/newPath'})`.
+
+### `enter`
+Yay, they made it. Use the oldPath, newPath, params to your hearts content.
+
+### `beforeLeave`
+The are about to leave. If the `newPath` is not something you like, you can go ahead and return `false` to prevent them moving (be sure to let them know why by adding some notification to your state/UI). You can even go ahead and chose to redirect them elsewhere.
+
+## Lazy loading
+Just use the JavaScript patterns you know and love e.g. with webpack.
+
+```js
+'/foo/' : {
+  enter: () => { 
+    require.ensure(['banana','monkey-holding-the-banana','the-jungle'], ()=>{
+      // your app logic
+    });
+  }
+```
+
+## Uni-Directional
+
+Now that we have the entire simple API covered, let's talk a bit more about patterns (🕊️ and 🐝). The simplest way to do it is simply to follow the `url -> state -> view` pattern. You can use something like `mobx` or `redux` for `state -> view` pattern. 
+
+* Browser's back / next buttons, or clicking on any link that changes the url will automatically trigger an event we already register to and we map them to the hooks as need. You don't need to do anything here.
+* Users actions like a `goToPayment()` action can follow the same pattern as the user clicking the link by simply calling `router.navigate('/payment')` (we just use pushstate or hash change based on detected browser support).
+
+Sweet, its all `url => someHookYouUseToChangeState` ❤️️.
