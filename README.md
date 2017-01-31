@@ -2,7 +2,9 @@
 
 > Take me back to when. Things were simpler then 🌹
 
-Application state should be the single source of truth. 
+A simple client side routing solution with the focus: 
+
+* application state should be the single source of truth. 
 
 ```
 URL -> ApplicationState -> YourView
