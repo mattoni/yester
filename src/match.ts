@@ -55,11 +55,18 @@ function _compilePattern(pattern: string) {
 
 const CompiledPatternsCache = Object.create(null)
 
-export function compilePattern(pattern: string) {
+function compilePattern(pattern: string) {
   if (!CompiledPatternsCache[pattern])
     CompiledPatternsCache[pattern] = _compilePattern(pattern)
 
   return CompiledPatternsCache[pattern]
+}
+
+type MatchResult = {
+  remainingPathname: string,
+  params: {
+    [paramName: string]: string
+  }
 }
 
 /**
@@ -74,14 +81,8 @@ export function compilePattern(pattern: string) {
  *                  there is none
  * - **             Consumes (greedy) all characters up to the next character
  *                  in the pattern, or to the end of the URL if there is none
- *
- * The return value is an object with the following properties:
- *
- * - remainingPathname
- * - paramNames
- * - paramValues
  */
-export function matchPattern({ pattern, pathname }: { pattern: string, pathname: string }) {
+export function match({ pattern, pathname }: { pattern: string, pathname: string }): MatchResult | null {
   // Ensure pattern starts with leading slash for consistency with pathname.
   if (pattern.charAt(0) !== '/') {
     pattern = `/${pattern}`
@@ -117,118 +118,17 @@ export function matchPattern({ pattern, pathname }: { pattern: string, pathname:
     remainingPathname = `/${remainingPathname}`
   }
 
-  return {
-    remainingPathname,
-    paramNames,
-    paramValues: match.slice(1).map(v => v && decodeURIComponent(v))
-  }
-}
-
-export function getParamNames(pattern) {
-  return compilePattern(pattern).paramNames
-}
-
-export function getParams({ pattern, pathname }: { pattern: string, pathname: string }) {
-  const match = matchPattern({ pattern, pathname })
-  if (!match) {
-    return null
-  }
-
-  const { paramNames, paramValues } = match
+  /** 
+   * Compose the param names and values into an object
+   */
+  const paramValues = match.slice(1).map(v => v && decodeURIComponent(v))
   const params = {}
-
   paramNames.forEach((paramName, index) => {
     params[paramName] = paramValues[index]
   })
 
-  return params
-}
-
-/**
- * Returns a version of the given pattern with params interpolated. Throws
- * if there is a dynamic segment of the pattern for which there is no param.
- */
-export function formatPattern(pattern, params) {
-  params = params || {}
-
-  const { tokens } = compilePattern(pattern)
-  let parenCount = 0, pathname = '', splatIndex = 0, parenHistory = []
-
-  let token, paramName, paramValue
-  for (let i = 0, len = tokens.length; i < len; ++i) {
-    token = tokens[i]
-
-    if (token === '*' || token === '**') {
-      paramValue = Array.isArray(params.splat) ? params.splat[splatIndex++] : params.splat
-
-      invariant(
-        paramValue != null || parenCount > 0,
-        `Missing splat #${splatIndex} for path "${pattern}"`
-      )
-
-      if (paramValue != null)
-        pathname += encodeURI(paramValue)
-    } else if (token === '(') {
-      parenHistory[parenCount] = ''
-      parenCount += 1
-    } else if (token === ')') {
-      const parenText = parenHistory.pop()
-      parenCount -= 1
-
-      if (parenCount)
-        parenHistory[parenCount - 1] += parenText
-      else
-        pathname += parenText
-    } else if (token.charAt(0) === ':') {
-      paramName = token.substring(1)
-      paramValue = params[paramName]
-
-      invariant(
-        paramValue != null || parenCount > 0,
-        `Missing "${paramName}" parameter for path "${pattern}"`,
-      )
-
-      if (paramValue == null) {
-        if (parenCount) {
-          parenHistory[parenCount - 1] = ''
-
-          const curTokenIdx = tokens.indexOf(token)
-          const tokensSubset = tokens.slice(curTokenIdx, tokens.length)
-          let nextParenIdx = -1
-
-          for (let i = 0; i < tokensSubset.length; i++) {
-            if (tokensSubset[i] == ')') {
-              nextParenIdx = i
-              break
-            }
-          }
-
-          invariant(
-            nextParenIdx > 0,
-            `Path "${pattern}" is missing end paren at segment "${tokensSubset.join('')}"`
-          )
-
-          // jump to ending paren
-          i = curTokenIdx + nextParenIdx - 1
-        }
-      }
-      else if (parenCount)
-        parenHistory[parenCount - 1] += encodeURIComponent(paramValue)
-      else
-        pathname += encodeURIComponent(paramValue)
-
-    } else {
-      if (parenCount)
-        parenHistory[parenCount - 1] += token
-      else
-        pathname += token
-    }
+  return {
+    remainingPathname,
+    params
   }
-
-  invariant(
-    parenCount <= 0,
-    `Path "${pattern}" is missing end paren`
-  )
-
-  return pathname.replace(/\/+/g, '/')
 }

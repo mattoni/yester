@@ -1,11 +1,15 @@
-import { matchPattern } from '../match';
+import { match } from '../match';
+import * as assert from 'assert';
 
-describe('matchPattern', () => {
+describe('match', () => {
   it('should match strings', () => {
-    const res = matchPattern({
-      pattern: '/foo/bar/:bas',
-      pathname: '/foo/bar/bas'
+    const res = match({
+      pattern: '/foo/bar',
+      pathname: '/foo/bar'
     });
-    console.log(res);
+    assert.deepEqual(res, {
+      remainingPathname: '',
+      params: {}
+    });
   });
 });
