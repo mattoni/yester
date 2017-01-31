@@ -8,12 +8,14 @@ Uni directional data flow is the best data flow:
 
 ![](https://raw.githubusercontent.com/basarat/yester/master/docs/uni-directional.png)
 
-Saw the other solutions out there, they had two differnce of opinions
+Saw the other solutions out there, I had two difference of opinions:
 
-* This is build in TypeScript, for TypeScript. Other libraries [will get there eventually](https://basarat.gitbooks.io/typescript/content/docs/why-typescript.html). Till then fighting with out-of-date type definitions was not fun (because the original documentation gets out of date just as quickly as it gets written, can't blame type def authors as they work off these out of date docs).
+* This is built in TypeScript, for TypeScript. Other libraries [will get there eventually](https://basarat.gitbooks.io/typescript/content/docs/why-typescript.html). Till then fighting with out-of-date type definitions was not fun.
 * They encourage tangling routing with components. This can be a good idea, but any time I needed more power, I had to do things like wrap my component (which may or may not work with TS classes), imagine props getting passed magically (not very type safe) and jump other hoops like `next` and `done` callbacks.
 
 If existing solutions work well for you (`npm install foo foo-bar @types/foo @types/foo-bar`) *thats okay*. You can move on and live a happy life yet 🌹
+
+> PROTIP: prefer refactorability over magic.
 
 ## What does it support
 
@@ -145,6 +147,7 @@ Just use the JavaScript patterns you know and love e.g. with webpack.
       // your app logic
     });
   }
+}
 ```
 
 ### Uni-Directional
@@ -161,7 +164,7 @@ Links are just `string`. I like to know which are the ones in the app, and keep 
 ```js
 export const links = {
   login: () => '/login',
-  profile: (id: string) => '/profile/id'
+  profile: (id: string) => `/profile/${id}`
 }
 ```
 
