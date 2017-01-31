@@ -52,4 +52,25 @@ describe('match', () => {
       }
     });
   });
+
+  it('should match path too long', () => {
+    const res = match({
+      pattern: '/foo',
+      path: '/foo/bar'
+    });
+    assert.equal(res, {
+      remainingPath: '/bar',
+      params: {}
+    });
+  })
+});
+
+describe('match invalid', () => {
+  it('should not match path too short', () => {
+    const res = match({
+      pattern: '/foo/bar',
+      path: '/foo'
+    });
+    assert.equal(res, null);
+  })
 });
