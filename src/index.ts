@@ -99,22 +99,28 @@ export class Router {
   navigate(path: string, replace?: boolean) {
     dom.setHash('#' + path, replace);
   }
+
+  /**
+   * Runs through the config and triggers an routes that matches the current path
+   */
   async init() {
     return this.trigger({ oldHash: '', newHash: dom.readHash() });
   }
-  private trigger = async ({ oldHash, newHash }) => {
+  
+  private trigger = async ({ oldHash, newHash }: { oldHash: string, newHash: string }) => {
     const routerConfig = this.routerConfig;
 
     /** Remove # */
     const oldPath = oldHash.substr(1);
-    const newPath = oldHash.substr(1);
+    const newPath = newHash.substr(1);
 
     const patterns = Object.keys(routerConfig);
     for (const pattern of patterns) {
       const config = routerConfig[pattern];
+
+      /** leaving */
       if (match({ pattern, path: oldPath })) {
 
-        /** leaving */
         if (config.beforeLeave) {
           const result = await config.beforeLeave({ oldPath, newPath });
           if (result == null) {
@@ -129,7 +135,10 @@ export class Router {
             return;
           }
         }
+      }
 
+      /** entering */
+      if (match({ pattern, path: newPath })) {
         /** entering */
         if (config.beforeEnter) {
           const result = await config.beforeEnter({ oldPath, newPath });
