@@ -3,7 +3,7 @@ export { match, MatchResult };
 
 
 namespace dom {
-  const dloc = document.location;
+  const dloc = typeof document !== 'undefined' ? document.location : { hash: '' };
 
   export function readHash(): string {
     // Non-IE browsers return '' when the address bar shows '#'
@@ -94,54 +94,60 @@ export interface RouterConfig {
 
 export class Router {
   constructor(public routerConfig: RouterConfig) {
-    dom.listen(async ({ oldHash, newHash }) => {
-      /** Remove # */
-      const oldPath = oldHash.substr(1);
-      const newPath = oldHash.substr(1);
-
-      const patterns = Object.keys(routerConfig);
-      for (const pattern of patterns) {
-        const config = routerConfig[pattern];
-        if (match({ pattern, path: oldPath })) {
-
-          /** leaving */
-          if (config.beforeLeave) {
-            const result = await config.beforeLeave({ oldPath, newPath });
-            if (result == null) {
-              /** nothing to do */
-            }
-            else if (result === false) {
-              dom.setHash(oldHash, true);
-              return;
-            }
-            else if (result.redirect) {
-              this.navigate(result.redirect, result.replace);
-              return;
-            }
-          }
-
-          /** entering */
-          if (config.beforeEnter) {
-            const result = await config.beforeEnter({ oldPath, newPath });
-            if (result == null) {
-              /** nothing to do */
-            }
-            else if (result.redirect) {
-              this.navigate(result.redirect, result.replace);
-              return;
-            }
-          }
-
-          /** enter */
-          if (config.enter) {
-            const result = await config.enter({ oldPath, newPath });
-            return;
-          }
-        }
-      }
-    });
+    dom.listen(this.trigger);
   }
   navigate(path: string, replace?: boolean) {
     dom.setHash('#' + path, replace);
+  }
+  async init() {
+    return this.trigger({ oldHash: '', newHash: dom.readHash() });
+  }
+  private trigger = async ({ oldHash, newHash }) => {
+    const routerConfig = this.routerConfig;
+
+    /** Remove # */
+    const oldPath = oldHash.substr(1);
+    const newPath = oldHash.substr(1);
+
+    const patterns = Object.keys(routerConfig);
+    for (const pattern of patterns) {
+      const config = routerConfig[pattern];
+      if (match({ pattern, path: oldPath })) {
+
+        /** leaving */
+        if (config.beforeLeave) {
+          const result = await config.beforeLeave({ oldPath, newPath });
+          if (result == null) {
+            /** nothing to do */
+          }
+          else if (result === false) {
+            dom.setHash(oldHash, true);
+            return;
+          }
+          else if (result.redirect) {
+            this.navigate(result.redirect, result.replace);
+            return;
+          }
+        }
+
+        /** entering */
+        if (config.beforeEnter) {
+          const result = await config.beforeEnter({ oldPath, newPath });
+          if (result == null) {
+            /** nothing to do */
+          }
+          else if (result.redirect) {
+            this.navigate(result.redirect, result.replace);
+            return;
+          }
+        }
+
+        /** enter */
+        if (config.enter) {
+          const result = await config.enter({ oldPath, newPath });
+          return;
+        }
+      }
+    }
   }
 }
