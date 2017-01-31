@@ -38,7 +38,9 @@ const router = new Router({
   }
 });
 
-/** If you want to call some `enter` to load the current url hash to your app state */
+/** 
+ * If you want to trigger some `beforeEnter` / `enter` (if it matches)
+ */
 router.init();
 
 /** To nav. Thinn wrapper on browser hash / pushstate (if supported) */
