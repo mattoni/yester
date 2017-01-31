@@ -3,7 +3,7 @@
 
 # Output
 lib
-demo
+/demo
 
 # Node
 node_modules
