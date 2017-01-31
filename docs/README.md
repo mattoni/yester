@@ -6,12 +6,12 @@
 
 Uni directional data flow is the best data flow: 
 
-![](https://raw.githubusercontent.com/basarat/yester/master/docs/uni-directional.png)
+![URL -> Application State -> Your View](https://raw.githubusercontent.com/basarat/yester/master/docs/uni-directional.png)
 
 Saw the other solutions out there, they had two differnce of opinions
 
-* This is build in TypeScript, for TypeScript. Other libraries [will get there eventually](https://basarat.gitbooks.io/typescript/content/docs/why-typescript.html). Till then fighting with out-of-date type definitions was not fun (because the original documentation gets out of date just as quickly as it gets written, can't blame type def authors as they work off these out of date docs).
-* They encourage tangling routing with components. This can be a good idea, but any time I needed more power, I had to do things like wrap my component (which may or may not work with TS classes), imagine props getting passed magically (not very type safe) and jump other hoops like `next` and `done` callbacks.
+* This is built in TypeScript, for TypeScript. Other libraries [will get there eventually](https://basarat.gitbooks.io/typescript/content/docs/why-typescript.html). Till then fighting with out-of-date type definitions was not fun (because the original documentation gets out of date just as quickly as it gets written, can't blame type def authors as they work off these out of date docs).
+* They encourage tangling routing with components. This can be a good idea, but any time I needed more power, I had to do things like wrap my component (which may or may not work with TS classes), imagine props getting passed magically (not very type safe), and jump through other hoops like `next` and `done` callbacks.
 
 If existing solutions work well for you (`npm install foo foo-bar @types/foo @types/foo-bar`) *thats okay*. You can move on and live a happy life yet 🌹
 
@@ -47,10 +47,10 @@ const router = new Router([
  */
 router.init();
 
-/** To nav. Thinn wrapper on browser hash / pushstate (if supported) */
-router.nagivate('/foo');
+/** To nav. Just a thin wrapper on browser hash / pushstate (if supported) */
+router.navigate('/foo');
 /** or replace if pushstate is supported, if not its ignored magically */
-router.nagivate('/foo', true);
+router.navigate('/foo', true);
 ```
 
 ## Matching on $
