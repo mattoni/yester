@@ -64,8 +64,14 @@ function compilePattern(pattern: string) {
 
 type MatchResult = {
   remainingPath: string,
+  /** 
+   * If you have a `:paramName` you get an object {paramName:value}
+   * 
+   * The last * or ** match is stored into `splat`
+   **/
   params: {
-    [paramName: string]: string
+    splat?: string;
+    [paramName: string]: string;
   }
 }
 

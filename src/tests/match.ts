@@ -104,14 +104,23 @@ describe('match', () => {
       }
     );
   })
-});
 
-describe('match invalid', () => {
   it('should not match path too short', () => {
     const res = match({
       pattern: '/foo/bar',
       path: '/foo'
     });
-    assert.equal(res, null);
+    assert.deepEqual(res, null);
+  })
+
+  it('should match path if optional', () => {
+    const res = match({
+      pattern: '/foo(/bar)',
+      path: '/foo'
+    });
+    assert.deepEqual(res, {
+      remainingPath: '',
+      params: {}
+    });
   })
 });
