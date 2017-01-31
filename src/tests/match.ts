@@ -58,7 +58,7 @@ describe('match', () => {
       pattern: '/foo',
       path: '/foo/bar'
     });
-    assert.equal(res, {
+    assert.deepEqual(res, {
       remainingPath: '/bar',
       params: {}
     });
