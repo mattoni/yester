@@ -11,3 +11,6 @@ URL -> ApplicationState -> YourView
 ```
 
 > [Powered by your github ⭐s](https://github.com/basarat/yester/stargazers)
+
+
+Build with TypeScript 🌹
