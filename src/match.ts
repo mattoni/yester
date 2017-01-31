@@ -62,17 +62,19 @@ function compilePattern(pattern: string) {
   return CompiledPatternsCache[pattern]
 }
 
+/** 
+ * If you have a `:paramName` you get an object {paramName:value}
+ * 
+ * The last * or ** match is stored into `splat`
+ **/
+export interface MatchResultParams {
+  splat?: string;
+  [paramName: string]: string;
+}
+
 export interface MatchResult {
-  remainingPath: string,
-  /** 
-   * If you have a `:paramName` you get an object {paramName:value}
-   * 
-   * The last * or ** match is stored into `splat`
-   **/
-  params: {
-    splat?: string;
-    [paramName: string]: string;
-  }
+  remainingPath: string;
+  params: MatchResultParams;
 }
 
 /**

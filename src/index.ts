@@ -1,5 +1,5 @@
-import { match, MatchResult } from './match';
-export { match, MatchResult };
+import { match, MatchResult, MatchResultParams } from './match';
+export { match, MatchResult, MatchResultParams };
 
 
 namespace dom {
@@ -29,6 +29,10 @@ namespace dom {
       else {
         history.pushState({}, document.title, hash)
       }
+      /** 
+       * Just calling history.pushState() or history.replaceState() won't trigger a popstate event
+       */
+      fire();
     } else {
       dloc.hash = hash;
     }
@@ -36,22 +40,26 @@ namespace dom {
     oldHash = readHash();
   }
 
+  /** Current listeners */
+  type ChangeEvent = { oldHash: string, newHash: string }
+  type Listener = { (evt: ChangeEvent): void }
+  let listeners: Listener[] = [];
+  const fire = () => {
+    const newHash = readHash();
+    if (oldHash === newHash) return;
+    listeners.forEach(l => l({ oldHash, newHash }));
+    oldHash = newHash;
+  };
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('hashchange', fire, false);
+    window.addEventListener('popstate', fire);
+  }
+
   export function listen(cb: (evt: { oldHash: string, newHash: string }) => void) {
-
-    if (typeof window === 'undefined') return () => null;
-
-    const listener = () => {
-      const newHash = readHash();
-      if (oldHash === newHash) return;
-      cb({ newHash, oldHash });
-      oldHash = newHash;
-    };
-
-    window.addEventListener('hashchange', listener, false);
-    window.addEventListener('popstate', listener);
+    listeners.push(cb);
     return () => {
-      window.removeEventListener('hashchange', listener);
-      window.removeEventListener('popstate', listener);
+      listeners = listeners.filter(l => l !== cb);
     }
   }
 }
@@ -59,6 +67,9 @@ namespace dom {
 export interface RouteChangeEvent {
   oldPath: string,
   newPath: string,
+}
+export interface RouteEnterEvent extends RouteChangeEvent {
+  params: MatchResultParams
 }
 
 export type RouteBeforeEnterResult = null | undefined | Promise<{ redirect: string, replace?: boolean }>;
@@ -72,12 +83,12 @@ export interface RouteConfig {
   /**
    * Called before entering a route. This is your chance to redirect if you want.
    **/
-  beforeEnter?: (evt: RouteChangeEvent) => RouteBeforeEnterResult;
+  beforeEnter?: (evt: RouteEnterEvent) => RouteBeforeEnterResult;
 
   /** 
    * Called on entering a route.
    **/
-  enter?: (evt: RouteChangeEvent) => RouteEnterResult;
+  enter?: (evt: RouteEnterEvent) => RouteEnterResult;
 
   /** 
    * On route leave,
@@ -103,10 +114,10 @@ export class Router {
   /**
    * Runs through the config and triggers an routes that matches the current path
    */
-  async init() {
+  init() {
     return this.trigger({ oldHash: '', newHash: dom.readHash() });
   }
-  
+
   private trigger = async ({ oldHash, newHash }: { oldHash: string, newHash: string }) => {
     const routerConfig = this.routerConfig;
 
@@ -138,10 +149,13 @@ export class Router {
       }
 
       /** entering */
-      if (match({ pattern, path: newPath })) {
+      const enterMatch = match({ pattern, path: newPath });
+      if (enterMatch) {
+        const params = enterMatch.params;
+
         /** entering */
         if (config.beforeEnter) {
-          const result = await config.beforeEnter({ oldPath, newPath });
+          const result = await config.beforeEnter({ oldPath, newPath, params });
           if (result == null) {
             /** nothing to do */
           }
@@ -153,7 +167,7 @@ export class Router {
 
         /** enter */
         if (config.enter) {
-          const result = await config.enter({ oldPath, newPath });
+          const result = await config.enter({ oldPath, newPath, params });
           return;
         }
       }
