@@ -49,3 +49,41 @@ router.nagivate('/foo');
 router.nagivate('/foo', true);
 ```
 
+## Matching 
+
+### Parameters
+
+Support `:param` for loading sections e.g
+
+```js
+'/foo/:bar' : {
+  enter: ({params}) => {
+    console.log(params); // {bar:'somebar'} 🍻
+  }
+}
+
+// User visits `/foo/somebar`
+```
+You can have as my params as you want e.g. `/foo/:bar/:baz`.
+
+### Optional
+
+Wrap any section with `()` to mark it as optional. e.g `/foo(/bar)`. In this case both `/foo` and `/foo/bar` match. To escape a `(` you can use a backslash e.g. `/foo\\(\\)` will only match the url `/foo()`.
+
+### Wild card
+
+`*` will match entire sections e.g. `/foo/*` will match `/foo/whatever/you/can/think/of`. The last matched `*` is placed in `params.splat`.
+
+### Wild card greedy
+
+`*` does not match greedily e.g. 
+
+* `/*/c` does not match `/you/are/cool/c` as a single star only eats `/*/cool/c` and the trailing `ool/c` is unmatchd.
+
+If you want such matching use the greedy `**` wildcard e.g.
+
+* `/**/c` matches `/you/are/cool/c`. 
+
+> The difference between `**` vs. `*` is only really evident when you want to match something inside i.e. `/*/c` (inside) vs. `/c/*` (end). In an end position they both behave the same.
+
+
