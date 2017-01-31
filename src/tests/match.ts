@@ -63,6 +63,77 @@ describe('match', () => {
       params: {}
     });
   })
+
+  it('should match *', () => {
+    const res = match({
+      pattern: '/foo/*',
+      path: '/foo/bar'
+    });
+    assert.deepEqual(res, {
+      remainingPath: '',
+      params: {
+        splat: 'bar'
+      }
+    });
+  })
+
+  it('should match **', () => {
+    assert.deepEqual(
+      match({
+        pattern: '/foo/**',
+        path: '/foo/bar'
+      })
+      , {
+        remainingPath: '',
+        params: {
+          splat: 'bar'
+        }
+      }
+    );
+  })
+
+  it('should match **', () => {
+    assert.deepEqual(
+      match({
+        pattern: '/foo/**',
+        path: '/foo/bar'
+      })
+      , {
+        remainingPath: '',
+        params: {
+          splat: 'bar'
+        }
+      }
+    );
+  });
+
+  it('should match /**/', () => {
+    assert.deepEqual(
+      match({
+        pattern: '/foo/**/baz',
+        path: '/foo/bar/baz'
+      })
+      , {
+        remainingPath: '',
+        params: {
+          splat: 'bar'
+        }
+      }
+    );
+
+    assert.deepEqual(
+      match({
+        pattern: '/foo/**/baz',
+        path: '/foo/bar/baz/baz'
+      })
+      , {
+        remainingPath: '',
+        params: {
+          splat: 'bar/baz'
+        }
+      }
+    );
+  });
 });
 
 describe('match invalid', () => {
