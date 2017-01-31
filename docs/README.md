@@ -27,7 +27,7 @@ npm install yester --save
 
 ## Quick 
 
-```ts
+```js
 import {Router} from 'yester';
 
 const router = new Router({
