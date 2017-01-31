@@ -133,3 +133,49 @@ Now that we have the entire simple API covered, let's talk a bit more about patt
 * Users actions like a `goToPayment()` action can follow the same pattern as the user clicking the link by simply calling `router.navigate('/payment')` (we just use pushstate or hash change based on detected browser support).
 
 Sweet, its all `url => someHookYouUseToChangeState` ❤️️.
+
+## Managing links
+Links are just `string`. I like to know which are the ones in the app, and keep them easy to maintain (thank to TypeScript). I normally have a file `links.ts` with: 
+
+```js
+export const links = {
+  login: () => '/login',
+  profile: (id: string) => '/profile/id'
+}
+```
+
+This file is my single source of truth.
+
+* I configure my routing using these functions: 
+
+```
+const router = new Router({
+  [links.login()]: {
+    enter:()=>{ /* do your state thing */ }
+  },
+  [links.profile(':profileId')]: {
+    enter:({params})=>{ /* do your state thing with `params.profileId` */ }
+  },
+});
+```
+
+* All calls to `router.navigte` also use `links` e.g. `router.navigate(links.profile('dave'))`. 
+* For `a` tags I have a function: 
+
+```js
+function linkTo(link: string) {
+  return `/#${link}`;
+}
+```
+And use (with JSX) this for links : `<a href={linkTo(links.profile(user.id))}>{user.name}</a>`.
+
+* For reminder emails (and other static assets) generate the template files using `links`: 
+
+```js
+const templateVars = {
+  userId: '{{userId}}'
+};
+const link = websiteRoot + links.profile(templateVars);
+```
+
+Of course you can use this `links.ts` in your dynamic server code as well. This way you don't get bad link refactorings (magic strings).
