@@ -13,18 +13,42 @@ namespace dom {
     return hash;
   }
 
-  export function setHash(hash: string) {
+  /**
+   * Used to track the last value set.
+   * if it does not change we ignore events
+   */
+  let lastHash = readHash();
+
+  export function setHash(hash: string, cb: () => void, replace: boolean) {
     if (readHash() === hash) return;
-    dloc.hash = hash;
+
+    if (typeof history !== 'undefined' && history.pushState) {
+      if (replace) {
+        history.replaceState({}, document.title, hash)
+      }
+      else {
+        history.pushState({}, document.title, hash)
+      }
+    } else {
+      dloc.hash = hash;
+    }
+
+    lastHash = readHash();
+    cb();
   }
 
   export function listen(cb: (hash: string) => any) {
     const listener = () => {
-      cb(readHash());
+      const newHash = readHash();
+      if (lastHash === newHash) return;
+      cb(newHash);
+      lastHash = newHash;
     };
     window.addEventListener('hashchange', listener, false);
+    window.addEventListener('popstate', listener);
     return () => {
       window.removeEventListener('hashchange', listener);
+      window.removeEventListener('popstate', listener);
     }
   }
 }
