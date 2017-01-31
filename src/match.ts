@@ -62,7 +62,7 @@ function compilePattern(pattern: string) {
   return CompiledPatternsCache[pattern]
 }
 
-type MatchResult = {
+export interface MatchResult {
   remainingPath: string,
   /** 
    * If you have a `:paramName` you get an object {paramName:value}

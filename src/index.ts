@@ -1,3 +1,7 @@
+import { match, MatchResult } from './match';
+export { match, MatchResult };
+
+
 namespace dom {
   const dloc = document.location;
 
@@ -25,13 +29,33 @@ namespace dom {
   }
 }
 
+export interface RouteChangeEvent {
+  oldPath: string,
+  newPath: string,
+}
+
+export type RouteBeforeResult = null | undefined | void | Promise<{ redirect: string }>;
+export type RouteEnterResult = void;
+/*
+ * false means you want to prevent leave
+ */
+export type RouteLeaveResult = null | undefined | void | false | Promise<{ redirect: string }>;
+
 export interface RouteConfig {
   /**
-   * Called before entering a route. This is your change to redirect if you want
+   * Called before entering a route. This is your chance to redirect if you want.
    **/
-  before?: any;
-  /** Called if route is finalized */
-  on?: any;
+  before?: (evt: RouteChangeEvent) => RouteBeforeResult;
+
+  /** 
+   * Called on entering a route.
+   **/
+  enter?: (evt: RouteChangeEvent) => RouteEnterResult;
+
+  /** 
+   * On route leave.
+   **/
+  leave?: (evt: RouteChangeEvent) => void;
 }
 
 export interface RouterConfig {
@@ -41,5 +65,8 @@ export interface RouterConfig {
 export class Router {
   constructor(public config: RouterConfig) {
 
+  }
+  navigate(path: string, replace: boolean) {
+    
   }
 }
