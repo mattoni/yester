@@ -63,7 +63,7 @@ function compilePattern(pattern: string) {
 }
 
 type MatchResult = {
-  remainingPathname: string,
+  remainingPath: string,
   params: {
     [paramName: string]: string
   }
@@ -82,7 +82,7 @@ type MatchResult = {
  * - **             Consumes (greedy) all characters up to the next character
  *                  in the pattern, or to the end of the URL if there is none
  */
-export function match({ pattern, pathname }: { pattern: string, pathname: string }): MatchResult | null {
+export function match({ pattern, path }: { pattern: string, path: string }): MatchResult | null {
   // Ensure pattern starts with leading slash for consistency with pathname.
   if (pattern.charAt(0) !== '/') {
     pattern = `/${pattern}`
@@ -98,15 +98,15 @@ export function match({ pattern, pathname }: { pattern: string, pathname: string
     regexpSource += '$'
   }
 
-  const match = pathname.match(new RegExp(`^${regexpSource}`, 'i'))
+  const match = path.match(new RegExp(`^${regexpSource}`, 'i'))
   if (match == null) {
     return null
   }
 
   const matchedPath = match[0]
-  let remainingPathname = pathname.substr(matchedPath.length)
+  let remainingPath = path.substr(matchedPath.length)
 
-  if (remainingPathname) {
+  if (remainingPath) {
     // Require that the match ends at a path separator, if we didn't match
     // the full path, so any remaining pathname is a new path segment.
     if (matchedPath.charAt(matchedPath.length - 1) !== '/') {
@@ -115,7 +115,7 @@ export function match({ pattern, pathname }: { pattern: string, pathname: string
 
     // If there is a remaining pathname, treat the path separator as part of
     // the remaining pathname for properly continuing the match.
-    remainingPathname = `/${remainingPathname}`
+    remainingPath = `/${remainingPath}`
   }
 
   /** 
@@ -128,7 +128,7 @@ export function match({ pattern, pathname }: { pattern: string, pathname: string
   })
 
   return {
-    remainingPathname,
+    remainingPath,
     params
   }
 }

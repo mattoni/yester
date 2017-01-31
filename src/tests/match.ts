@@ -5,10 +5,10 @@ describe('match', () => {
   it('should match strings', () => {
     const res = match({
       pattern: '/foo/bar',
-      pathname: '/foo/bar'
+      path: '/foo/bar'
     });
     assert.deepEqual(res, {
-      remainingPathname: '',
+      remainingPath: '',
       params: {}
     });
   });
