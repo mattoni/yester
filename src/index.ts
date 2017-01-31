@@ -34,18 +34,18 @@ export interface RouteChangeEvent {
   newPath: string,
 }
 
-export type RouteBeforeResult = null | undefined | void | Promise<{ redirect: string }>;
+export type RouteBeforeEnterResult = null | undefined | void | Promise<{ redirect: string }>;
 export type RouteEnterResult = void;
 /*
  * false means you want to prevent leave
  */
-export type RouteLeaveResult = null | undefined | void | false | Promise<{ redirect: string }>;
+export type RouteBeforeLeaveResult = null | undefined | void | false | Promise<{ redirect: string }>;
 
 export interface RouteConfig {
   /**
    * Called before entering a route. This is your chance to redirect if you want.
    **/
-  before?: (evt: RouteChangeEvent) => RouteBeforeResult;
+  beforeEnter?: (evt: RouteChangeEvent) => RouteBeforeEnterResult;
 
   /** 
    * Called on entering a route.
@@ -53,9 +53,10 @@ export interface RouteConfig {
   enter?: (evt: RouteChangeEvent) => RouteEnterResult;
 
   /** 
-   * On route leave.
+   * On route leave,
+   * you can redirect to elsewhere if you want or just return false to prevent leaving
    **/
-  leave?: (evt: RouteChangeEvent) => RouteLeaveResult;
+  beforeLeave?: (evt: RouteChangeEvent) => RouteBeforeLeaveResult;
 }
 
 export interface RouterConfig {
