@@ -55,7 +55,7 @@ export interface RouteConfig {
   /** 
    * On route leave.
    **/
-  leave?: (evt: RouteChangeEvent) => void;
+  leave?: (evt: RouteChangeEvent) => RouteLeaveResult;
 }
 
 export interface RouterConfig {
@@ -67,6 +67,6 @@ export class Router {
 
   }
   navigate(path: string, replace: boolean) {
-    
+
   }
 }
