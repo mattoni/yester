@@ -17,9 +17,9 @@ namespace dom {
    * Used to track the last value set.
    * if it does not change we ignore events
    */
-  let lastHash = readHash();
+  let oldHash = readHash();
 
-  export function setHash(hash: string, cb: () => void, replace: boolean) {
+  export function setHash(hash: string, replace: boolean) {
     if (readHash() === hash) return;
 
     if (typeof history !== 'undefined' && history.pushState) {
@@ -33,17 +33,20 @@ namespace dom {
       dloc.hash = hash;
     }
 
-    lastHash = readHash();
-    cb();
+    oldHash = readHash();
   }
 
-  export function listen(cb: (hash: string) => any) {
+  export function listen(cb: (evt: { oldHash: string, newHash: string }) => void) {
+
+    if (typeof window === 'undefined') return () => null;
+
     const listener = () => {
       const newHash = readHash();
-      if (lastHash === newHash) return;
-      cb(newHash);
-      lastHash = newHash;
+      if (oldHash === newHash) return;
+      cb({ newHash, oldHash });
+      oldHash = newHash;
     };
+
     window.addEventListener('hashchange', listener, false);
     window.addEventListener('popstate', listener);
     return () => {
@@ -58,12 +61,12 @@ export interface RouteChangeEvent {
   newPath: string,
 }
 
-export type RouteBeforeEnterResult = null | undefined | void | Promise<{ redirect: string }>;
+export type RouteBeforeEnterResult = null | undefined | Promise<{ redirect: string, replace?: boolean }>;
 export type RouteEnterResult = void;
 /*
  * false means you want to prevent leave
  */
-export type RouteBeforeLeaveResult = null | undefined | void | false | Promise<{ redirect: string }>;
+export type RouteBeforeLeaveResult = null | undefined | false | Promise<{ redirect: string, replace?: boolean }>;
 
 export interface RouteConfig {
   /**
@@ -84,14 +87,61 @@ export interface RouteConfig {
 }
 
 export interface RouterConfig {
-  [key: string]: RouteConfig;
+  [pattern: string]: RouteConfig;
+  /** Common pattern */
+  '*'?: RouteConfig;
 }
 
 export class Router {
-  constructor(public config: RouterConfig) {
+  constructor(public routerConfig: RouterConfig) {
+    dom.listen(async ({ oldHash, newHash }) => {
+      /** Remove # */
+      const oldPath = oldHash.substr(1);
+      const newPath = oldHash.substr(1);
 
+      const patterns = Object.keys(routerConfig);
+      for (const pattern of patterns) {
+        const config = routerConfig[pattern];
+        if (match({ pattern, path: oldPath })) {
+
+          /** leaving */
+          if (config.beforeLeave) {
+            const result = await config.beforeLeave({ oldPath, newPath });
+            if (result == null) {
+              /** nothing to do */
+            }
+            else if (result === false) {
+              dom.setHash(oldHash, true);
+              return;
+            }
+            else if (result.redirect) {
+              this.navigate(result.redirect, result.replace);
+              return;
+            }
+          }
+
+          /** entering */
+          if (config.beforeEnter) {
+            const result = await config.beforeEnter({ oldPath, newPath });
+            if (result == null) {
+              /** nothing to do */
+            }
+            else if (result.redirect) {
+              this.navigate(result.redirect, result.replace);
+              return;
+            }
+          }
+
+          /** enter */
+          if (config.enter) {
+            const result = await config.enter({ oldPath, newPath });
+            return;
+          }
+        }
+      }
+    });
   }
-  navigate(path: string, replace: boolean) {
-
+  navigate(path: string, replace?: boolean) {
+    dom.setHash('#' + path, replace);
   }
 }
