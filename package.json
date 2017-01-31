@@ -5,7 +5,15 @@
   "main": "lib/index.js",
   "typings": "lib/index",
   "scripts": {
+    "buildtsc": "tsc -p .",
+    "unittest": "mocha ./lib/tests/**/*.js",
+    "test": "npm run buildtsc && npm run unittest"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/mocha": "^2.2.38",
+    "mocha": "3.1.2",
+    "typescript": "^2.1.5"
+  }
 }
