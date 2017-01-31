@@ -62,78 +62,48 @@ describe('match', () => {
       remainingPath: '/bar',
       params: {}
     });
-  })
+  });
 
-  it('should match *', () => {
-    const res = match({
-      pattern: '/foo/*',
-      path: '/foo/bar'
-    });
-    assert.deepEqual(res, {
-      remainingPath: '',
-      params: {
-        splat: 'bar'
+`Greedy vs. non-greedy
+/*/c matches /you/are/okay/c
+/*/c does not match /you/are/cool/c
+/**/c matches /you/are/cool/c
+`
+  it('match *', () => {
+    assert.deepEqual(
+      match({
+        pattern: '/*/c',
+        path: '/you/arc/okay/c'
+      }), {
+        remainingPath: '',
+        params: {
+          splat: 'you/arc/okay'
+        }
       }
-    });
+    );
+
+    assert.deepEqual(
+      match({
+        pattern: '/*/c',
+        path: '/you/arc/cool/c'
+      }), null
+    );
   })
 
   it('should match **', () => {
     assert.deepEqual(
       match({
-        pattern: '/foo/**',
-        path: '/foo/bar'
+        pattern: '/foo/**/',
+        path: '/foo/bar/bas/'
       })
       , {
         remainingPath: '',
         params: {
-          splat: 'bar'
+          splat: 'bar/bas'
         }
       }
     );
   })
-
-  it('should match **', () => {
-    assert.deepEqual(
-      match({
-        pattern: '/foo/**',
-        path: '/foo/bar'
-      })
-      , {
-        remainingPath: '',
-        params: {
-          splat: 'bar'
-        }
-      }
-    );
-  });
-
-  it('should match /**/', () => {
-    assert.deepEqual(
-      match({
-        pattern: '/foo/**/baz',
-        path: '/foo/bar/baz'
-      })
-      , {
-        remainingPath: '',
-        params: {
-          splat: 'bar'
-        }
-      }
-    );
-
-    assert.deepEqual(
-      match({
-        pattern: '/foo/**/baz',
-        path: '/foo/bar/baz/baz'
-      })
-      , {
-        remainingPath: '',
-        params: {
-          splat: 'bar/baz'
-        }
-      }
-    );
-  });
 });
 
 describe('match invalid', () => {
