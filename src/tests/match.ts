@@ -2,6 +2,10 @@ import { matchPattern } from '../match';
 
 describe('matchPattern', () => {
   it('should match strings', () => {
-    console.log(matchPattern('/foo/bar', '/foo/bar'));
+    const res = matchPattern({
+      pattern: '/foo/bar/:bas',
+      pathname: '/foo/bar/bas'
+    });
+    console.log(res);
   });
 });

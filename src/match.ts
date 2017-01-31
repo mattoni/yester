@@ -81,7 +81,7 @@ export function compilePattern(pattern: string) {
  * - paramNames
  * - paramValues
  */
-export function matchPattern(pattern: string, pathname: string) {
+export function matchPattern({ pattern, pathname }: { pattern: string, pathname: string }) {
   // Ensure pattern starts with leading slash for consistency with pathname.
   if (pattern.charAt(0) !== '/') {
     pattern = `/${pattern}`
@@ -128,8 +128,8 @@ export function getParamNames(pattern) {
   return compilePattern(pattern).paramNames
 }
 
-export function getParams(pattern: string, pathname: string) {
-  const match = matchPattern(pattern, pathname)
+export function getParams({ pattern, pathname }: { pattern: string, pathname: string }) {
+  const match = matchPattern({ pattern, pathname })
   if (!match) {
     return null
   }
