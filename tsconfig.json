@@ -6,7 +6,8 @@
     "lib": [
       "dom",
       "es6"
-    ]
+    ],
+    "noImplicitAny": true
   },
   "include": [
     "src"

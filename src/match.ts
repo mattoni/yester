@@ -129,9 +129,9 @@ export function match({ pattern, path }: { pattern: string, path: string }): Mat
   /** 
    * Compose the param names and values into an object
    */
-  const paramValues = match.slice(1).map(v => v && decodeURIComponent(v))
+  const paramValues: string[] = match.slice(1).map(v => v && decodeURIComponent(v))
   const params = {}
-  paramNames.forEach((paramName, index) => {
+  paramNames.forEach((paramName: string, index: number) => {
     params[paramName] = paramValues[index]
   })
 
