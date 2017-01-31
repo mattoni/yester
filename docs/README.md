@@ -30,13 +30,17 @@ npm install yester --save
 ```js
 import {Router} from 'yester';
 
-const router = new Router({
-  '/foo' : {
+/**
+ * The router takes an array of RouteConfig objects.
+ */
+const router = new Router([
+  { 
+    $:'/foo' 
     enter: () => {
       appState.fireTheMissiles();
     }
   }
-});
+]});
 
 /** 
  * If you want to trigger some `beforeEnter` / `enter` (if it matches)
@@ -49,14 +53,15 @@ router.nagivate('/foo');
 router.nagivate('/foo', true);
 ```
 
-## Matching 
+## Matching on $
 
 ### Parameters
 
 Support `:param` for loading sections e.g
 
 ```js
-'/foo/:bar' : {
+{
+  $: '/foo/:bar',
   enter: ({params}) => {
     console.log(params); // {bar:'somebar'} 🍻
   }
@@ -95,7 +100,8 @@ You can specify `beforeEnter`, `enter`, `beforeLeave` handlers. (Of course, you 
 Example of all these handlers: 
 
 ```js
-'/foo/' : {
+{
+  $: '/foo/',
   beforeEnter: ({oldPath, newPath, params}) => void | Promise<{ redirect: string, replace?: boolean }>,
   enter: ({oldPath, newPath, params}) => void,
   beforeLeave: ({oldPath, newPath}): void | false | Promise<{ redirect: string, replace?: boolean }>,
@@ -113,11 +119,27 @@ Yay, they made it. Use the oldPath, newPath, params to your hearts content.
 ### `beforeLeave`
 The are about to leave. If the `newPath` is not something you like, you can go ahead and return `false` to prevent them moving (be sure to let them know why by adding some notification to your state/UI). You can even go ahead and chose to redirect them elsewhere.
 
-## Lazy loading
+## Ordering Routes
+The router takes an array of `RouteConfig` objects. On a route change (browser hash change or pushstate event), we go through these routes one by one. So you can order the routes in decreasing priority e.g. error pages:
+
+```js 
+[
+  { $: '/foo',
+    enter: ()=>{ appState.current = 'foo' } },
+  { $: '*', 
+    enter: ()=>{ appState.current = 'notfound' } },
+]
+```
+
+## Tips
+Here are some tips. Few of these are really tied to us, but its good to have helpful guidance so here it is.
+
+### Lazy loading
 Just use the JavaScript patterns you know and love e.g. with webpack.
 
 ```js
-'/foo/' : {
+{
+  $: '/foo/',
   enter: () => { 
     require.ensure(['banana','monkey-holding-the-banana','the-jungle'], ()=>{
       // your app logic
@@ -125,8 +147,7 @@ Just use the JavaScript patterns you know and love e.g. with webpack.
   }
 ```
 
-## Uni-Directional
-
+### Uni-Directional
 Now that we have the entire simple API covered, let's talk a bit more about patterns (🕊️ and 🐝). The simplest way to do it is simply to follow the `url -> state -> view` pattern. You can use something like `mobx` or `redux` for `state -> view` pattern. 
 
 * Browser's back / next buttons, or clicking on any link that changes the url will automatically trigger an event we already register to and we map them to the hooks as need. You don't need to do anything here.
@@ -134,7 +155,7 @@ Now that we have the entire simple API covered, let's talk a bit more about patt
 
 Sweet, its all `url => someHookYouUseToChangeState` ❤️️.
 
-## Managing links
+### Managing links
 Links are just `string`. I like to know which are the ones in the app, and keep them easy to maintain (thank to TypeScript). I normally have a file `links.ts` with: 
 
 ```js

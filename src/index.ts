@@ -81,6 +81,11 @@ export type RouteBeforeLeaveResult = null | undefined | false | Promise<{ redire
 
 export interface RouteConfig {
   /**
+   * The pattern to match against
+   */
+  $: string;
+
+  /**
    * Called before entering a route. This is your chance to redirect if you want.
    **/
   beforeEnter?: (evt: RouteEnterEvent) => RouteBeforeEnterResult;
@@ -97,14 +102,9 @@ export interface RouteConfig {
   beforeLeave?: (evt: RouteChangeEvent) => RouteBeforeLeaveResult;
 }
 
-export interface RouterConfig {
-  [pattern: string]: RouteConfig;
-  /** Common pattern */
-  '*'?: RouteConfig;
-}
 
 export class Router {
-  constructor(public routerConfig: RouterConfig) {
+  constructor(public routes: RouteConfig[]) {
     dom.listen(this.trigger);
   }
   navigate(path: string, replace?: boolean) {
@@ -119,16 +119,13 @@ export class Router {
   }
 
   private trigger = async ({ oldHash, newHash }: { oldHash: string, newHash: string }) => {
-    const routerConfig = this.routerConfig;
-
-    /** Remove # */
+    /** Remove `#`` */
     const oldPath = oldHash.substr(1);
     const newPath = newHash.substr(1);
 
-    const patterns = Object.keys(routerConfig);
-    for (const pattern of patterns) {
-      const config = routerConfig[pattern];
-
+    for (const config of this.routes) {
+      const pattern = config.$;
+      
       /** leaving */
       if (match({ pattern, path: oldPath })) {
 
