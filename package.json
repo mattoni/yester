@@ -5,12 +5,14 @@
   "main": "lib/index.js",
   "typings": "lib/index",
   "scripts": {
+    "demo": "webpack",
     "build": "tsc -p .",
     "unittest": "mocha ./lib/tests/**/*.js",
     "test": "npm run build && npm run unittest",
     "preversion": "npm run build",
     "postversion": "git push --follow-tags && npm publish",
-    "start": "npm run build -- -w & npm run unittest -- --watch"
+    "start": "npm run build -- -w & npm run unittest -- --watch",
+    "publishdemo": "npm run demo && ts-node ./src/scripts/publishdemo.ts"
   },
   "author": "",
   "license": "MIT",
@@ -19,6 +21,7 @@
     "@types/node": "^7.0.4",
     "mocha": "3.1.2",
     "ts-loader": "^2.0.0",
+    "ts-node": "2.0.0",
     "typescript": "^2.1.5",
     "webpack": "^2.2.1"
   }
