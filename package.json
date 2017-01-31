@@ -5,9 +5,12 @@
   "main": "lib/index.js",
   "typings": "lib/index",
   "scripts": {
-    "buildtsc": "tsc -p .",
+    "build": "tsc -p .",
     "unittest": "mocha ./lib/tests/**/*.js",
-    "test": "npm run buildtsc && npm run unittest"
+    "test": "npm run build && npm run unittest",
+    "preversion": "npm run build",
+    "postversion": "git push --follow-tags && npm publish",
+    "start": "npm run build -- -w & npm run unittest -- --watch"
   },
   "author": "",
   "license": "MIT",
