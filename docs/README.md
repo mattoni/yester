@@ -6,7 +6,7 @@
 
 Uni directional data flow is the best data flow: 
 
-![](https://raw.githubusercontent.com/basarat/yester/master/docs/uni-directional.png)
+![URL -> Application State -> Your View](https://raw.githubusercontent.com/basarat/yester/master/docs/uni-directional.png)
 
 Saw the other solutions out there, I had two difference of opinions:
 
@@ -49,10 +49,10 @@ const router = new Router([
  */
 router.init();
 
-/** To nav. Thinn wrapper on browser hash / pushstate (if supported) */
-router.nagivate('/foo');
+/** To nav. Just a thin wrapper on browser hash / pushstate (if supported) */
+router.navigate('/foo');
 /** or replace if pushstate is supported, if not its ignored magically */
-router.nagivate('/foo', true);
+router.navigate('/foo', true);
 ```
 
 ## Matching on $
