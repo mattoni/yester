@@ -39,7 +39,7 @@ export const Nav = observer(() => {
     <Horizontal>
       <a href={'https://github.com/basarat/yester/tree/master/src/demo'} target="_blank">Code for the demo</a>
       <a href={'http://basarat.com/yester'} target="_blank">Yester Docs</a>
-      <a href={'https://gitub.com/basarat/yester'} target="_blank">Star it on github ⭐</a>
+      <a href={'https://github.com/basarat/yester'} target="_blank">Star it on github ⭐</a>
     </Horizontal>
   </Vertical>;
 });
