@@ -30,7 +30,7 @@ npm install yester --save
 ## Quick 
 
 ```js
-import {Router} from 'yester';
+import {Router, navigate, link} from 'yester';
 
 /**
  * The router takes an array of RouteConfig objects.
@@ -50,9 +50,16 @@ const router = new Router([
 router.init();
 
 /** To nav. Just a thin wrapper on browser hash / pushstate (if supported) */
-router.navigate('/foo');
+navigate('/foo');
 /** or replace if pushstate is supported, if not its ignored magically */
-router.navigate('/foo', true);
+navigate('/foo', true);
+
+/** 
+ * Use link to get a link. 
+ * Just a thin wrapper that adds `#` to a given path
+ * e.g. with JSX:
+ **/
+<a href={link('/foo')}>Take me to foo</a>
 ```
 
 ## Matching on $
@@ -183,23 +190,21 @@ const router = new Router({
 });
 ```
 
-* All calls to `router.navigte` also use `links` e.g. `router.navigate(links.profile('dave'))`. 
-* For `a` tags I have a function: 
+* All calls to `navigate` also use `links` e.g. `navigate(links.profile('dave'))`. 
+* For `a` tags, use `link` with `links` e.g. with JSX:
 
 ```js
-function linkTo(link: string) {
-  return `#${link}`;
-}
+<a href={link(links.profile(user.id))}>{user.name}</a>
 ```
-And use (with JSX) this for links : `<a href={linkTo(links.profile(user.id))}>{user.name}</a>`.
 
 * For reminder emails (and other static assets) generate the template files using `links`: 
 
 ```js
+const websiteRoot = 'https://www.github.com/'
 const templateVars = {
   userId: '{{userId}}'
 };
-const link = websiteRoot + links.profile(templateVars);
+const link = websiteRoot + link(links.profile(templateVars));
 ```
 
 Of course you can use this `links.ts` in your dynamic server code as well. This way you don't get bad link refactorings (magic strings).

@@ -22,7 +22,3 @@ export const router = new Router([
   },
   { $: '*', enter: () => routeState.setRoute('login') }
 ]);
-
-export function navigate(link: string) {
-  router.navigate(link);
-}

@@ -107,9 +107,6 @@ export class Router {
   constructor(public routes: RouteConfig[]) {
     dom.listen(this.trigger);
   }
-  navigate(path: string, replace?: boolean) {
-    dom.setHash('#' + path, replace);
-  }
 
   /**
    * Runs through the config and triggers an routes that matches the current path
@@ -144,7 +141,7 @@ export class Router {
             }
           }
           else if (result.redirect) {
-            this.navigate(result.redirect, result.replace);
+            navigate(result.redirect, result.replace);
             return;
           }
         }
@@ -162,7 +159,7 @@ export class Router {
             /** nothing to do */
           }
           else if (result.redirect) {
-            this.navigate(result.redirect, result.replace);
+            navigate(result.redirect, result.replace);
             return;
           }
         }
@@ -175,4 +172,19 @@ export class Router {
       }
     }
   }
+}
+
+
+/**
+ * Navigates to the given path
+ */
+export function navigate(path: string, replace ?: boolean) {
+  dom.setHash(`#${path}`, replace);
+}
+
+/**
+ * Gives you a link that when triggered, navigates to the given path
+ */
+export function link(path: string) {
+  return  `#${path}`;
 }

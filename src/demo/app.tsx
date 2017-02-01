@@ -11,7 +11,8 @@ import * as ReactDOM from 'react-dom';
 import { routeState } from './routeState';
 import { observer } from 'mobx-react';
 import { router } from './router';
-import { links, linkto } from './links';
+import { link } from '../index';
+import { links } from './links';
 
 /** 
  * Some page CSS customizations.
@@ -30,8 +31,8 @@ import { Button, Alert, Vertical, Horizontal, AlertSuccess } from './ui/componen
 export const Nav = observer(() => {
   return <Vertical>
     {routeState.loggedIn && <Horizontal>
-      <a href={linkto(links.profile('dave'))}>Dave</a>
-      <a href={linkto(links.profile('john'))}>John</a>
+      <a href={link(links.profile('dave'))}>Dave</a>
+      <a href={link(links.profile('john'))}>John</a>
     </Horizontal>}
 
     {routeState.loggedIn && <Button onClick={() => routeState.logout()}>Logout</Button>}

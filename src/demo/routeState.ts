@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { navigate } from './router';
+import { navigate } from '../index';
 import { links } from './links';
 
 
