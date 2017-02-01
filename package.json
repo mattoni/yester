@@ -1,6 +1,6 @@
 {
   "name": "yester",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A simple js routing solution",
   "main": "lib/index.js",
   "typings": "lib/index",
