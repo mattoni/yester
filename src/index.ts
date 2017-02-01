@@ -77,7 +77,7 @@ export type RouteEnterResult = void;
 /*
  * false means you want to prevent leave
  */
-export type RouteBeforeLeaveResult = null | undefined | false | { redirect: string, replace?: boolean } | Promise<{ redirect: string, replace?: boolean }>;
+export type RouteBeforeLeaveResult = null | undefined | boolean | Promise<boolean> | { redirect: string, replace?: boolean } | Promise<{ redirect: string, replace?: boolean }>;
 
 export interface RouteConfig {
   /**
@@ -125,7 +125,7 @@ export class Router {
 
     for (const config of this.routes) {
       const pattern = config.$;
-      
+
       /** leaving */
       if (match({ pattern, path: oldPath })) {
 
@@ -134,9 +134,14 @@ export class Router {
           if (result == null) {
             /** nothing to do */
           }
-          else if (result === false) {
-            dom.setHash(oldHash, true);
-            return;
+          else if (typeof result === 'boolean') {
+            if (result === false) {
+              dom.setHash(oldHash, true);
+              return;
+            }
+            else {
+              /** nothing to do */
+            }
           }
           else if (result.redirect) {
             this.navigate(result.redirect, result.replace);
