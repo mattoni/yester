@@ -188,7 +188,7 @@ const router = new Router({
 
 ```js
 function linkTo(link: string) {
-  return `/#${link}`;
+  return `#${link}`;
 }
 ```
 And use (with JSX) this for links : `<a href={linkTo(links.profile(user.id))}>{user.name}</a>`.

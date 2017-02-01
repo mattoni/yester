@@ -6,24 +6,29 @@
   "typings": "lib/index",
   "scripts": {
     "demo": "webpack",
+    "demo:live": "webpack-dev-server --hot --inline --content-base ./demo",
     "build": "tsc -p .",
     "unittest": "mocha ./lib/tests/**/*.js",
     "test": "npm run build && npm run unittest",
     "preversion": "npm run build",
     "postversion": "git push --follow-tags && npm publish",
-    "start": "npm run build -- -w & npm run unittest -- --watch",
+    "start": "npm run build -- -w & npm run unittest -- --watch & npm run demo:live",
     "publishdemo": "npm run demo && ts-node ./src/scripts/publishdemo.ts"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/mocha": "^2.2.38",
-    "@types/node": "^7.0.4",
-    "gh-pages": "^0.11.0",
+    "@types/mocha": "2.2.38",
+    "@types/node": "7.0.4",
+    "babel-polyfill": "^6.22.0",
+    "csstips": "0.0.3",
+    "gh-pages": "0.11.0",
     "mocha": "3.1.2",
-    "ts-loader": "^2.0.0",
+    "ts-loader": "2.0.0",
     "ts-node": "2.0.0",
-    "typescript": "^2.1.5",
-    "webpack": "^2.2.1"
+    "typescript": "2.1.5",
+    "typestyle": "0.26.1",
+    "webpack": "2.2.1",
+    "webpack-dev-server": "1.16.3"
   }
 }

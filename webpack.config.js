@@ -1,7 +1,8 @@
 module.exports = {
-  entry: './src/demo/app.ts',
+  entry: './src/demo/app.tsx',
   output: {
-    filename: 'demo/app.js'
+    path: './demo',
+    filename: 'app.js'
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
