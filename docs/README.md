@@ -203,3 +203,7 @@ const link = websiteRoot + links.profile(templateVars);
 ```
 
 Of course you can use this `links.ts` in your dynamic server code as well. This way you don't get bad link refactorings (magic strings).
+
+# Demo
+
+[Demo for all of this in practice](http://basarat.com/yester-demo)
