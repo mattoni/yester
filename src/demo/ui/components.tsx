@@ -1,4 +1,4 @@
-import { style, classes } from 'typestyle';
+import { style, classes, keyframes } from 'typestyle';
 import * as React from 'react';
 import { verticallySpaced, horizontallySpaced } from 'csstips';
 
@@ -49,7 +49,14 @@ export const AlertSuccess
   </div>
 
 export const Vertical
-  = ({ children }: { children?: any, }) => <div className={style(verticallySpaced(10))} children={children} />
+  = ({ children, className }: { children?: any, className?: string }) => <div className={classes(style(verticallySpaced(10)), className)} children={children} />
 
 export const Horizontal
   = ({ children }: { children?: any, }) => <div className={style(horizontallySpaced(10))} children={children} />
+
+export const fadeIn = style({
+  animationName: keyframes({
+    from: { opacity: 0 }, to: { opacity: 1 },
+  }),
+  animationDuration: '.5s',
+});
