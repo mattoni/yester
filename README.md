@@ -15,3 +15,7 @@ Build with TypeScript, for TypeScript 🌹
 ## Docs
 
 [As always we work hard on our docs 📝](http://basarat.com/yester)
+
+## Demo
+
+[A demo of the concepts explained in the docs](http://basarat.com/yester-demo/)
