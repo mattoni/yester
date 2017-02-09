@@ -17,6 +17,11 @@ If existing solutions work well for you (`npm install foo foo-bar @types/foo @ty
 
 > PROTIP: prefer refactorability over magic.
 
+## Demo
+
+[Demo for all of the concepts in practice](http://basarat.com/yester-demo)
+
+
 ## What does it support
 
 Simple `#/foo` = on match > (`beforeEnter` `enter` `beforeLeave`) management. That's all I really needed. You can map `url` => `state` => `any arbitrary nesting of components` very easily and more maintainably in the long term instead of depending on hidden features of some library.
@@ -208,7 +213,3 @@ const link = websiteRoot + link(links.profile(templateVars));
 ```
 
 Of course you can use this `links.ts` in your dynamic server code as well. This way you don't get bad link refactorings (magic strings).
-
-# Demo
-
-[Demo for all of this in practice](http://basarat.com/yester-demo)
