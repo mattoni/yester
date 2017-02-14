@@ -125,13 +125,19 @@ Example of all these handlers:
 Lets look at these one by one.
 
 ### `beforeEnter` 
-Triggered before calling `enter`. This is your chance to go ahead and redirect the user if you want (e.g. if they are not logged in), just return `Promise.resolve({redirect:'/newPath'})`.
+Triggered before calling `enter`. 
+
+* This is your chance to go ahead and redirect the user if you want (e.g. if they are not logged in), just return `Promise.resolve({redirect:'/newPath'})`.
+* Otherwise just return nothing and we will move on to `enter` (if any).
 
 ### `enter`
-Yay, they made it. Use the oldPath, newPath, params to your hearts content.
+Yay, they made it. Use the `{oldPath, newPath, params}` to your hearts content.
 
 ### `beforeLeave`
-The are about to leave. If the `newPath` is not something you like, you can go ahead and return `false` to prevent them moving (be sure to let them know why by adding some notification to your state/UI). You can even go ahead and chose to redirect them elsewhere.
+The are about to leave. 
+
+* If the `newPath` is not something you like, you can go ahead and return `false` to prevent them moving (be sure to let them know why by adding some notification to your state/UI).
+* You can even go ahead and chose to redirect them elsewhere (return `Promise<{ redirect: string, replace?: boolean }>`).
 
 ## Ordering Routes
 The router takes an array of `RouteConfig` objects. On a route change (browser hash change or pushstate event), we go through these routes one by one. So you can order the routes in decreasing priority e.g. error pages:
