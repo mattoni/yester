@@ -20,5 +20,5 @@ export const router = new Router([
       }
     },
   },
-  { $: '*', enter: () => routeState.setRoute('login') }
+  { $: '*', enter: () => routeState.setRoute('login') },
 ]);

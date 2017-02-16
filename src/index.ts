@@ -6,9 +6,15 @@ namespace dom {
   const dloc = typeof document !== 'undefined' ? document.location : { hash: '' };
 
   export function readHash(): string {
-    // Non-IE browsers return '' when the address bar shows '#'
-    // IE returns '#'. Normalize
+    // When the address bar shows '#'
+    // - Non-IE browsers return '' 
+    // - IE returns '#'
+    // Normalize to ''
     const hash = dloc.hash === '#' ? '' : dloc.hash;
+
+    // For empty path we should return `#/`
+    // This keeps the matching algorithm consistent and simple
+    if (hash === '') return '#/';
 
     return hash;
   }
