@@ -85,3 +85,8 @@ const Page = observer(() => {
 ReactDOM.render(<Page />, document.getElementById('root'))
 router.init();
 forceRenderStyles();
+
+/** Set stateful modules */
+import { setStatefulModules } from 'fuse-hmr';
+declare var FuseBox: any;
+setStatefulModules(FuseBox, ['routeState'])
