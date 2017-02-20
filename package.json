@@ -34,6 +34,7 @@
     "react-dom": "^15.4.2",
     "ts-node": "2.0.0",
     "typescript": "2.1.5",
-    "typestyle": "0.26.1"
+    "typestyle": "0.26.1",
+    "uglify-js": "^2.7.5"
   }
 }
