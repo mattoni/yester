@@ -78,12 +78,12 @@ export interface RouteEnterEvent extends RouteChangeEvent {
   params: MatchResultParams
 }
 
-export type RouteBeforeEnterResult = null | undefined | { redirect: string, replace?: boolean } | Promise<{ redirect: string, replace?: boolean }>;
+export type RouteBeforeEnterResult = void | null | undefined | { redirect: string, replace?: boolean } | Promise<{ redirect: string, replace?: boolean }>;
 export type RouteEnterResult = void;
 /*
  * false means you want to prevent leave
  */
-export type RouteBeforeLeaveResult = null | undefined | boolean | Promise<boolean> | { redirect: string, replace?: boolean } | Promise<{ redirect: string, replace?: boolean }>;
+export type RouteBeforeLeaveResult = void | null | undefined | boolean | Promise<boolean> | { redirect: string, replace?: boolean } | Promise<{ redirect: string, replace?: boolean }>;
 
 export interface RouteConfig {
   /**
@@ -184,13 +184,13 @@ export class Router {
 /**
  * Navigates to the given path
  */
-export function navigate(path: string, replace ?: boolean) {
-  dom.setHash(`#${path}`, replace);
+export function navigate(path: string, replace?: boolean) {
+  dom.setHash(`#${path}`, !!replace);
 }
 
 /**
  * Gives you a link that when triggered, navigates to the given path
  */
 export function link(path: string) {
-  return  `#${path}`;
+  return `#${path}`;
 }

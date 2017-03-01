@@ -76,6 +76,7 @@ const Page = observer(() => {
     case 'profile': return <Profile profileId={routeState.profileId} />
     default:
       const _ensure: never = routeState.route;
+      return <noscript />
   }
 });
 

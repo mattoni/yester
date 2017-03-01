@@ -9,7 +9,8 @@
     ],
     "noImplicitAny": true,
     "jsx": "react",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "strictNullChecks": true
   },
   "include": [
     "src"

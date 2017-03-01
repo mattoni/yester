@@ -68,7 +68,7 @@ function compilePattern(pattern: string) {
  * The last * or ** match is stored into `splat`
  **/
 export interface MatchResultParams {
-  splat?: string;
+  splat: string;
   [paramName: string]: string;
 }
 
