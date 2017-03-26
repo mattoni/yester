@@ -7,7 +7,7 @@ namespace dom {
 
   export function readHash(): string {
     // When the address bar shows '#'
-    // - Non-IE browsers return '' 
+    // - Non-IE browsers return ''
     // - IE returns '#'
     // Normalize to ''
     const hash = dloc.hash === '#' ? '' : dloc.hash;
@@ -35,7 +35,7 @@ namespace dom {
       else {
         history.pushState({}, document.title, hash)
       }
-      /** 
+      /**
        * Just calling history.pushState() or history.replaceState() won't trigger a popstate event
        */
       fire();
@@ -96,12 +96,12 @@ export interface RouteConfig {
    **/
   beforeEnter?: (evt: RouteEnterEvent) => RouteBeforeEnterResult;
 
-  /** 
+  /**
    * Called on entering a route.
    **/
   enter?: (evt: RouteEnterEvent) => RouteEnterResult;
 
-  /** 
+  /**
    * On route leave,
    * you can redirect to elsewhere if you want or just return false to prevent leaving
    **/
@@ -156,6 +156,10 @@ export class Router {
       /** entering */
       const enterMatch = match({ pattern, path: newPath });
       if (enterMatch) {
+        if (enterMatch.remainingPath) {
+          continue;
+        }
+
         const params = enterMatch.params;
 
         /** entering */
