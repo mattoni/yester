@@ -41,13 +41,13 @@ import {Router, navigate, link} from 'yester';
  * The router takes an array of RouteConfig objects.
  */
 const router = new Router([
-  { 
-    $:'/foo' 
+  {
+    $: '/foo',
     enter: () => {
       appState.fireTheMissiles();
     }
   }
-]});
+]);
 
 /** 
  * If you want to trigger some `beforeEnter` / `enter` (if it matches)
