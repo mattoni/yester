@@ -1,74 +1,6 @@
 import { match, MatchResult, MatchResultParams } from './match';
+import { createBrowserHistory, createHashHistory, createMemoryHistory, History } from "history";
 export { match, MatchResult, MatchResultParams };
-
-
-namespace dom {
-  const dloc = typeof document !== 'undefined' ? document.location : { hash: '' };
-
-  export function readHash(): string {
-    // When the address bar shows '#'
-    // - Non-IE browsers return ''
-    // - IE returns '#'
-    // Normalize to ''
-    const hash = dloc.hash === '#' ? '' : dloc.hash;
-
-    // For empty path we should return `#/`
-    // This keeps the matching algorithm consistent and simple
-    if (hash === '') return '#/';
-
-    return hash;
-  }
-
-  /**
-   * Used to track the last value set.
-   * if it does not change we ignore events
-   */
-  let oldHash = readHash();
-
-  export function setHash(hash: string, replace: boolean) {
-    if (readHash() === hash) return;
-
-    if (typeof history !== 'undefined' && history.pushState) {
-      if (replace) {
-        history.replaceState({}, document.title, hash)
-      }
-      else {
-        history.pushState({}, document.title, hash)
-      }
-      /**
-       * Just calling history.pushState() or history.replaceState() won't trigger a popstate event
-       */
-      fire();
-    } else {
-      dloc.hash = hash;
-    }
-
-    oldHash = readHash();
-  }
-
-  /** Current listeners */
-  type ChangeEvent = { oldHash: string, newHash: string }
-  type Listener = { (evt: ChangeEvent): void }
-  let listeners: Listener[] = [];
-  const fire = () => {
-    const newHash = readHash();
-    if (oldHash === newHash) return;
-    listeners.forEach(l => l({ oldHash, newHash }));
-    oldHash = newHash;
-  };
-
-  if (typeof window !== 'undefined') {
-    window.addEventListener('hashchange', fire, false);
-    window.addEventListener('popstate', fire);
-  }
-
-  export function listen(cb: (evt: { oldHash: string, newHash: string }) => void) {
-    listeners.push(cb);
-    return () => {
-      listeners = listeners.filter(l => l !== cb);
-    }
-  }
-}
 
 export interface RouteChangeEvent {
   oldPath: string,
@@ -108,24 +40,47 @@ export interface RouteConfig {
   beforeLeave?: (evt: RouteChangeEvent) => RouteBeforeLeaveResult;
 }
 
+export interface RouterConfig {
+  type: "hash" | "mem" | "browser";
+}
 
 export class Router {
-  constructor(public routes: RouteConfig[]) {
-    dom.listen(this.trigger);
+  private history: History;
+  constructor(public routes: RouteConfig[], private config: RouterConfig) {
+    switch (config.type) {
+      case "hash":
+        this.history = createHashHistory();
+        break;
+      case "mem":
+        this.history = createMemoryHistory();
+        break;
+      case "browser":
+      default:
+        this.history = createBrowserHistory();
+        break;
+    }
   }
 
   /**
    * Runs through the config and triggers an routes that matches the current path
    */
   init() {
-    return this.trigger({ oldHash: '', newHash: dom.readHash() });
+    this.history.listen((location, action) => {
+      this.trigger({ oldPath: '', newPath: location.pathname, search: location.search })
+    });
+    return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
   }
 
-  private trigger = async ({ oldHash, newHash }: { oldHash: string, newHash: string }) => {
-    /** Remove `#`` */
-    const oldPath = oldHash.substr(1);
-    const newPath = newHash.substr(1);
+  navigate(path: string, replace?: boolean) {
+    if (replace) {
+      this.history.replace(path);
+      return;
+    }
 
+    this.history.push(path);
+  }
+
+  private trigger = async ({ oldPath, newPath, search }: { oldPath: string, newPath: string, search: History.Search }) => {
     for (const config of this.routes) {
       const pattern = config.$;
 
@@ -139,7 +94,7 @@ export class Router {
           }
           else if (typeof result === 'boolean') {
             if (result === false) {
-              dom.setHash(oldHash, true);
+              this.navigate(oldPath, true);
               return;
             }
             else {
@@ -147,7 +102,7 @@ export class Router {
             }
           }
           else if (result.redirect) {
-            navigate(result.redirect, result.replace);
+            this.navigate(result.redirect, result.replace);
             return;
           }
         }
@@ -169,7 +124,7 @@ export class Router {
             /** nothing to do */
           }
           else if (result.redirect) {
-            navigate(result.redirect, result.replace);
+            this.navigate(result.redirect, result.replace);
             return;
           }
         }
@@ -184,17 +139,3 @@ export class Router {
   }
 }
 
-
-/**
- * Navigates to the given path
- */
-export function navigate(path: string, replace?: boolean) {
-  dom.setHash(`#${path}`, !!replace);
-}
-
-/**
- * Gives you a link that when triggered, navigates to the given path
- */
-export function link(path: string) {
-  return `#${path}`;
-}

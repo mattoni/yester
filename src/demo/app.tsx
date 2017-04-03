@@ -11,7 +11,6 @@ import * as ReactDOM from 'react-dom';
 import { routeState } from './routeState';
 import { observer } from 'mobx-react';
 import { router } from './router';
-import { link } from '../index';
 import { links } from './links';
 
 /** 
@@ -31,8 +30,8 @@ import { Button, Alert, Vertical, Horizontal, AlertSuccess } from './ui/componen
 export const Nav = observer(() => {
   return <Vertical>
     {routeState.loggedIn && <Horizontal>
-      <a href={link(links.profile('dave'))}>Dave</a>
-      <a href={link(links.profile('john'))}>John</a>
+      <Link path={links.profile('dave')}>Dave</Link>
+      <Link path={links.profile('john')}>John</Link>
     </Horizontal>}
 
     {routeState.loggedIn && <Button onClick={() => routeState.logout()}>Logout</Button>}
@@ -65,6 +64,15 @@ export const Profile = observer(({ profileId }: { profileId: string }) =>
   </Vertical>
 );
 
+
+const Link = ({path, replace, children}: {path: string, replace?: boolean, children?: any}) => {
+  const nav = (e: React.MouseEvent<any>) => {
+    e.preventDefault();
+    router.navigate(path, replace);
+  }
+
+  return <a href="" onClick={nav}>{children}</a>;  
+}
 
 
 /**

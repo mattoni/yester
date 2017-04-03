@@ -18,6 +18,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/history": "^4.5.0",
     "@types/mocha": "2.2.38",
     "@types/node": "7.0.4",
     "@types/react": "^15.0.5",
@@ -36,5 +37,8 @@
     "typescript": "2.1.5",
     "typestyle": "0.26.1",
     "uglify-js": "^2.7.5"
+  },
+  "dependencies": {
+    "history": "^4.6.1"
   }
 }
