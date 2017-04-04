@@ -51,7 +51,7 @@ export const Login = observer(() =>
   <Vertical>
     <h3>Login Page</h3>
     {!routeState.loggedIn && <Button onClick={() => routeState.login()}>Click here to login</Button>}
-    {routeState.loggedIn && <AlertSuccess>You are logged in! Visit some profile page :)</AlertSuccess>}
+    {routeState.loggedIn && <AlertSuccess>You are logged in! Visit some profile Pages :)</AlertSuccess>}
     {routeState.loginRequiredMessage && <Alert>{routeState.loginRequiredMessage}</Alert>}
     <Nav />
   </Vertical>
@@ -64,7 +64,9 @@ export const Profile = observer(({ profileId }: { profileId: string }) =>
   </Vertical>
 );
 
-
+/**
+ * Example of how a link component could be implemented
+ */
 const Link = ({path, replace, children}: {path: string, replace?: boolean, children?: any}) => {
   return <a href={path} onClick={(e) => router.handleAnchorClick(e.nativeEvent)}>{children}</a>;  
 }

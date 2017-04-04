@@ -746,7 +746,7 @@ fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2:
     mkdirp ">=0.5 0"
     rimraf "2"
 
-fuse-box@next:
+fuse-box@1.4.1-beta.22:
   version "1.4.1-beta.22"
   resolved "https://registry.yarnpkg.com/fuse-box/-/fuse-box-1.4.1-beta.22.tgz#9b9d9850de61212829f819893b153539a87c7600"
   dependencies:

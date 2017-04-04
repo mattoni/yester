@@ -13,6 +13,7 @@
     "strictNullChecks": true
   },
   "include": [
-    "src"
+    "src",
+    "./fuse.ts"
   ]
 }
