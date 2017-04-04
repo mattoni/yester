@@ -28,11 +28,12 @@ if (isDev) {
 
 const bundle = box
   .bundle('demo/app.js')
-  .watch()
-  .hmr()
   .instructions('> demo/app.tsx');
 
 if (isDev) {
+  bundle
+    .watch()
+    .hmr();
 }
 
 box.run();
