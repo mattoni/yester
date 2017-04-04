@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "typings": "lib/index",
   "scripts": {
-    "demo": "ts-node fuse production",
+    "demo": "ts-node fuse.ts production",
     "demo:live": "ts-node fuse.ts dev",
     "build": "tsc -p .",
     "unittest": "mocha ./lib/tests/**/*.js",

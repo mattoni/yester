@@ -91,6 +91,5 @@ router.init();
 forceRenderStyles();
 
 /** Set stateful modules */
-import { setStatefulModules } from 'fuse-hmr';
-declare var FuseBox: any;
-setStatefulModules(FuseBox, ['routeState'])
+import { setStatefulModules } from 'fuse-box/modules/fuse-hmr';
+setStatefulModules((n) => /routeState/.test(n));

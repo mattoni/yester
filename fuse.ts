@@ -6,7 +6,8 @@ const isDev = process.argv.indexOf('dev') !== -1;
 const box = FuseBox
   .init({
     homeDir: "src",
-    output: "demo/app.js",
+    cache: true,
+    output: "app.js",
     plugins: [
       EnvPlugin({ NODE_ENV: process.argv[2] }),
       !isDev && UglifyJSPlugin()
@@ -16,7 +17,7 @@ const box = FuseBox
 if (isDev) {
   const build = path.join(__dirname, "demo");
   box
-    .dev({ port: 8080, root: false }, server => {
+    .dev({ port: 8080, root: false, hmr: true }, server => {
       const app: express.Application = server.httpServer.app;
       app.use(express.static(build));
       app.get('*', (req, res) => {
@@ -25,8 +26,13 @@ if (isDev) {
     });
 }
 
-box
+const bundle = box
   .bundle('demo/app.js')
-  .instructions('>demo/app.tsx');
+  .watch()
+  .hmr()
+  .instructions('> demo/app.tsx');
+
+if (isDev) {
+}
 
 box.run();
