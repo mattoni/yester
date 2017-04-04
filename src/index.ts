@@ -6,8 +6,10 @@ export interface RouteChangeEvent {
   oldPath: string,
   newPath: string,
 }
+
 export interface RouteEnterEvent extends RouteChangeEvent {
-  params: MatchResultParams
+  params: MatchResultParams,
+  search: { [key: string]: string }
 }
 
 export type RouteBeforeEnterResult = void | null | undefined | { redirect: string, replace?: boolean } | Promise<{ redirect: string, replace?: boolean }>;
@@ -66,6 +68,7 @@ export class Router {
    */
   init() {
     this.history.listen((location, action) => {
+
       this.trigger({ oldPath: '', newPath: location.pathname, search: location.search })
     });
     return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
@@ -80,7 +83,23 @@ export class Router {
     this.history.push(path);
   }
 
+  handleAnchorClick(e: Event | MouseEvent) {
+    if (!(e instanceof MouseEvent)) {
+      return;
+    }
+    if (e.which !== 1) {
+      return;
+    }
+    e.preventDefault();
+    if (!(e.target instanceof HTMLAnchorElement)) {
+      return;
+    }
+
+    this.navigate(e.target.pathname);
+  }
+
   private trigger = async ({ oldPath, newPath, search }: { oldPath: string, newPath: string, search: History.Search }) => {
+    const parsedSearch = parseSearchString(search);
     for (const config of this.routes) {
       const pattern = config.$;
 
@@ -119,7 +138,7 @@ export class Router {
 
         /** entering */
         if (config.beforeEnter) {
-          const result = await config.beforeEnter({ oldPath, newPath, params });
+          const result = await config.beforeEnter({ oldPath, newPath, params, search: parsedSearch });
           if (result == null) {
             /** nothing to do */
           }
@@ -131,7 +150,7 @@ export class Router {
 
         /** enter */
         if (config.enter) {
-          const result = await config.enter({ oldPath, newPath, params });
+          const result = await config.enter({ oldPath, newPath, params, search: parsedSearch });
           return;
         }
       }
@@ -139,3 +158,14 @@ export class Router {
   }
 }
 
+function parseSearchString(query: string) {
+  return query
+    .replace(/(^\?)/, '')
+    .split('&')
+    .reduce((obj: { [key: string]: any }, currentPair) => {
+      var pair = currentPair.split('=');
+      obj[pair[0]] = pair[1];
+
+      return obj;
+    }, {});
+}

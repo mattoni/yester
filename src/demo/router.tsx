@@ -9,7 +9,8 @@ export const router = new Router([
   },
   {
     $: links.profile(':profileId'),
-    enter: ({ params: { profileId } }) => {
+    enter: (match) => {
+      const { profileId } = match.params;
       routeState.setRoute('profile');
       routeState.setProfile(profileId);
     },

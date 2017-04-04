@@ -30,7 +30,7 @@ import { Button, Alert, Vertical, Horizontal, AlertSuccess } from './ui/componen
 export const Nav = observer(() => {
   return <Vertical>
     {routeState.loggedIn && <Horizontal>
-      <Link path={links.profile('dave')}>Dave</Link>
+      <Link path={`${links.profile('dave')}?test=abc123`}>Dave</Link>
       <Link path={links.profile('john')}>John</Link>
     </Horizontal>}
 
@@ -66,12 +66,7 @@ export const Profile = observer(({ profileId }: { profileId: string }) =>
 
 
 const Link = ({path, replace, children}: {path: string, replace?: boolean, children?: any}) => {
-  const nav = (e: React.MouseEvent<any>) => {
-    e.preventDefault();
-    router.navigate(path, replace);
-  }
-
-  return <a href="" onClick={nav}>{children}</a>;  
+  return <a href={path} onClick={(e) => router.handleAnchorClick(e.nativeEvent)}>{children}</a>;  
 }
 
 
