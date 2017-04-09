@@ -135,9 +135,6 @@ export class Router {
         params = enterPreMatch.params;
       }
     }
-
-    console.log(beforeMatch, enterMatch, params);
-
     if (beforeMatch) {
       if (beforeMatch.beforeLeave) {
         const result = await beforeMatch.beforeLeave({ oldPath, newPath });
