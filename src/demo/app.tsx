@@ -11,6 +11,7 @@ import * as ReactDOM from 'react-dom';
 import { routeState } from './routeState';
 import { observer } from 'mobx-react';
 import { router } from './router';
+import { link } from '../index';
 import { links } from './links';
 
 /** 
@@ -30,8 +31,8 @@ import { Button, Alert, Vertical, Horizontal, AlertSuccess } from './ui/componen
 export const Nav = observer(() => {
   return <Vertical>
     {routeState.loggedIn && <Horizontal>
-      <Link path={`${links.profile('dave')}?test=abc123`}>Dave</Link>
-      <Link path={links.profile('john')}>John</Link>
+      <a href={link(links.profile('dave'))}>Dave</a>
+      <a href={link(links.profile('john'))}>John</a>
     </Horizontal>}
 
     {routeState.loggedIn && <Button onClick={() => routeState.logout()}>Logout</Button>}
@@ -51,7 +52,7 @@ export const Login = observer(() =>
   <Vertical>
     <h3>Login Page</h3>
     {!routeState.loggedIn && <Button onClick={() => routeState.login()}>Click here to login</Button>}
-    {routeState.loggedIn && <AlertSuccess>You are logged in! Visit some profile Pages :)</AlertSuccess>}
+    {routeState.loggedIn && <AlertSuccess>You are logged in! Visit some profile page :)</AlertSuccess>}
     {routeState.loginRequiredMessage && <Alert>{routeState.loginRequiredMessage}</Alert>}
     <Nav />
   </Vertical>
@@ -64,12 +65,6 @@ export const Profile = observer(({ profileId }: { profileId: string }) =>
   </Vertical>
 );
 
-/**
- * Example of how a link component could be implemented
- */
-const Link = ({path, replace, children}: {path: string, replace?: boolean, children?: any}) => {
-  return <a href={path} onClick={(e) => router.handleAnchorClick(e.nativeEvent)}>{children}</a>;  
-}
 
 
 /**
@@ -93,5 +88,6 @@ router.init();
 forceRenderStyles();
 
 /** Set stateful modules */
-import { setStatefulModules } from 'fuse-box/modules/fuse-hmr';
-setStatefulModules((n) => /routeState/.test(n));
+import { setStatefulModules } from 'fuse-hmr';
+declare var FuseBox: any;
+setStatefulModules(FuseBox, ['routeState'])

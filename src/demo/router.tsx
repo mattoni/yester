@@ -9,8 +9,7 @@ export const router = new Router([
   },
   {
     $: links.profile(':profileId'),
-    enter: (match) => {
-      const { profileId } = match.params;
+    enter: ({ params: { profileId } }) => {
       routeState.setRoute('profile');
       routeState.setProfile(profileId);
     },
@@ -22,4 +21,4 @@ export const router = new Router([
     },
   },
   { $: '*', enter: () => routeState.setRoute('login') },
-], {type: "browser"});
+]);
