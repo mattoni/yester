@@ -109,60 +109,80 @@ export class Router {
 
   private trigger = async ({ oldPath, newPath, search }: { oldPath: string, newPath: string, search: History.Search }) => {
     const parsedSearch = parseSearchString(search);
+
+    let beforeMatch: RouteConfig | null = null;
+    let enterMatch: RouteConfig | null = null;
+    let params: MatchResultParams | null = null;
+
+    // pre-parse out matches to make sure they are hit
     for (const config of this.routes) {
       const pattern = config.$;
-
-      /** leaving */
-      const beforeMatch = match({ pattern, path: oldPath });
-      if (beforeMatch && !beforeMatch.remainingPath) {
-        if (config.beforeLeave) {
-          const result = await config.beforeLeave({ oldPath, newPath });
-          if (result == null) {
-            /** nothing to do */
-          }
-          else if (typeof result === 'boolean') {
-            if (result === false) {
-              this.navigate(oldPath, true);
-              return;
-            }
-            else {
-              /** nothing to do */
-            }
-          }
-          else if (result.redirect) {
-            this.navigate(result.redirect, result.replace);
-            return;
-          }
+      const beforePreMatch = match({ pattern, path: oldPath });
+      const enterPreMatch = match({ pattern, path: newPath });
+      // only use first match and if no remaining path, i.e. full match
+      if (!beforeMatch) {
+        if (beforePreMatch && !beforePreMatch.remainingPath) {
+          beforeMatch = config;
         }
       }
 
-      /** entering */
-      const enterMatch = match({ pattern, path: newPath });
-      if (enterMatch) {
-        if (enterMatch.remainingPath) {
+      if (!enterMatch) {
+        if (!enterPreMatch || enterPreMatch.remainingPath) {
           continue;
         }
 
-        const params = enterMatch.params;
+        enterMatch = config;
+        params = enterPreMatch.params;
+      }
+    }
 
-        /** entering */
-        if (config.beforeEnter) {
-          const result = await config.beforeEnter({ oldPath, newPath, params, search: parsedSearch });
-          if (result == null) {
-            /** nothing to do */
-          }
-          else if (result.redirect) {
-            this.navigate(result.redirect, result.replace);
+    console.log(beforeMatch, enterMatch, params);
+
+    if (beforeMatch) {
+      if (beforeMatch.beforeLeave) {
+        const result = await beforeMatch.beforeLeave({ oldPath, newPath });
+        if (result == null) {
+          /** nothing to do */
+        }
+        else if (typeof result === 'boolean') {
+          if (result === false) {
+            this.navigate(oldPath, true);
             return;
           }
+          else {
+            /** nothing to do */
+          }
         }
-
-        /** enter */
-        if (config.enter) {
-          const result = await config.enter({ oldPath, newPath, params, search: parsedSearch });
+        else if (result.redirect) {
+          this.navigate(result.redirect, result.replace);
           return;
         }
       }
+    }
+
+    // No match
+    if (!enterMatch || !params) {
+      return;
+    }
+
+    /** entering */
+
+    /** entering */
+    if (enterMatch.beforeEnter) {
+      const result = await enterMatch.beforeEnter({ oldPath, newPath, params, search: parsedSearch });
+      if (result == null) {
+        /** nothing to do */
+      }
+      else if (result.redirect) {
+        this.navigate(result.redirect, result.replace);
+        return;
+      }
+    }
+
+    /** enter */
+    if (enterMatch.enter) {
+      const result = await enterMatch.enter({ oldPath, newPath, params, search: parsedSearch });
+      return;
     }
   }
 }
