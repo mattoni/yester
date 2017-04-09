@@ -67,11 +67,12 @@ export class Router {
    * Runs through the config and triggers an routes that matches the current path
    */
   init() {
+    let oldPath = this.history.location.pathname;
     this.history.listen((location, action) => {
-
-      this.trigger({ oldPath: '', newPath: location.pathname, search: location.search })
+      this.trigger({ oldPath: oldPath, newPath: location.pathname, search: location.search })
+      oldPath = location.pathname;
     });
-    return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
+    return this.trigger({ oldPath: oldPath, newPath: oldPath, search: this.history.location.search });
   }
 
   navigate(path: string, replace?: boolean) {
@@ -95,6 +96,7 @@ export class Router {
     if (e.currentTarget instanceof HTMLAnchorElement) {
       p = e.currentTarget.pathname;
     } else {
+      // For use where currentTarget may not be what you expect (i.e. React)
       p = pathOverride;
     }
 
@@ -112,7 +114,6 @@ export class Router {
 
       /** leaving */
       if (match({ pattern, path: oldPath })) {
-
         if (config.beforeLeave) {
           const result = await config.beforeLeave({ oldPath, newPath });
           if (result == null) {

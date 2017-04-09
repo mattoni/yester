@@ -68,7 +68,7 @@ export const Profile = observer(({ profileId }: { profileId: string }) =>
  * Example of how a link component could be implemented
  */
 const Link = ({path, replace, children}: {path: string, replace?: boolean, children?: any}) => {
-  return <a href={path} onClick={(e) => router.handleAnchorClick(e.nativeEvent)}>{children}</a>;  
+  return <a href={path} onClick={(e) => router.handleAnchorClick(e.nativeEvent, replace, path)}>{children}</a>;  
 }
 
 

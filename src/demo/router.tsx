@@ -20,6 +20,9 @@ export const router = new Router([
         return { redirect: links.login() };
       }
     },
+    beforeLeave: (match) => {
+      console.log("You have left: ", match.oldPath, "and are going to: ", match.newPath);
+    }
   },
   { $: '*', enter: () => routeState.setRoute('login') },
 ], {type: "browser"});
