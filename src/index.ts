@@ -83,7 +83,7 @@ export class Router {
     this.history.push(path);
   }
 
-  handleAnchorClick(e: Event | MouseEvent) {
+  handleAnchorClick(e: Event | MouseEvent, replace?: boolean) {
     if (!(e instanceof MouseEvent)) {
       return;
     }
@@ -95,7 +95,7 @@ export class Router {
       return;
     }
 
-    this.navigate(e.target.pathname);
+    this.navigate(e.target.pathname, replace);
   }
 
   private trigger = async ({ oldPath, newPath, search }: { oldPath: string, newPath: string, search: History.Search }) => {
