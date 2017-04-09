@@ -83,7 +83,7 @@ export class Router {
     this.history.push(path);
   }
 
-  handleAnchorClick(e: Event | MouseEvent, replace?: boolean) {
+  handleAnchorClick(e: Event | MouseEvent, replace?: boolean, pathOverride?: string) {
     if (!(e instanceof MouseEvent)) {
       return;
     }
@@ -91,11 +91,18 @@ export class Router {
       return;
     }
     e.preventDefault();
-    if (!(e.target instanceof HTMLAnchorElement)) {
+    let p;
+    if (e.currentTarget instanceof HTMLAnchorElement) {
+      p = e.currentTarget.pathname;
+    } else {
+      p = pathOverride;
+    }
+
+    if (!p) {
       return;
     }
 
-    this.navigate(e.target.pathname, replace);
+    this.navigate(p, replace);
   }
 
   private trigger = async ({ oldPath, newPath, search }: { oldPath: string, newPath: string, search: History.Search }) => {
