@@ -113,7 +113,8 @@ export class Router {
       const pattern = config.$;
 
       /** leaving */
-      if (match({ pattern, path: oldPath })) {
+      const beforeMatch = match({ pattern, path: oldPath });
+      if (beforeMatch && !beforeMatch.remainingPath) {
         if (config.beforeLeave) {
           const result = await config.beforeLeave({ oldPath, newPath });
           if (result == null) {
