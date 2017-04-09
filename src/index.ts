@@ -72,7 +72,7 @@ export class Router {
       this.trigger({ oldPath: oldPath, newPath: location.pathname, search: location.search })
       oldPath = location.pathname;
     });
-    return this.trigger({ oldPath: oldPath, newPath: oldPath, search: this.history.location.search });
+    return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
   }
 
   navigate(path: string, replace?: boolean) {
