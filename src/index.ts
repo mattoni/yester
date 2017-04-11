@@ -48,6 +48,7 @@ export interface RouterConfig {
 
 export class Router {
   private history: History;
+  private transitioning: Promise<any>;
   constructor(public routes: RouteConfig[], private config: RouterConfig) {
     switch (config.type) {
       case "hash":
@@ -68,11 +69,23 @@ export class Router {
    */
   init() {
     let oldPath = this.history.location.pathname;
-    this.history.listen((location, action) => {
-      this.trigger({ oldPath: oldPath, newPath: location.pathname, search: location.search })
+    let nextPath: string;
+    this.history.listen(async (location, action) => {
+      // ensure we only run transition for the path we go to.
+      // keeps things in sync.
+      nextPath = location.pathname;
+      if (this.transitioning) {
+        await this.transitioning;
+        if (location.pathname !== nextPath) {
+          return;
+        }
+      }
+
+      this.transitioning = this.trigger({ oldPath: oldPath, newPath: location.pathname, search: location.search });
       oldPath = location.pathname;
     });
-    return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
+    this.transitioning = this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
+    return this.transitioning;
   }
 
   navigate(path: string, replace?: boolean) {
