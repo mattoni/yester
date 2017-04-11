@@ -15,10 +15,7 @@ export const router = new Router([
   {
     $: links.profile(':profileId'),
     enter: async (match) => {
-      const { profileId } = match.params;
-      console.log("transitioning to ", profileId);
-      await new Promise(res => setTimeout(res, 2000));
-      console.log("finished  ", profileId);      
+      const { profileId } = match.params;     
       routeState.setRoute('profile');
       routeState.setProfile(profileId);
     },
