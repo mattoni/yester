@@ -44,6 +44,7 @@ export interface RouteConfig {
 
 export interface RouterConfig {
   type: "hash" | "mem" | "browser";
+  triggerOnInit?: boolean;
 }
 
 export class Router {
@@ -66,13 +67,19 @@ export class Router {
   /**
    * Runs through the config and triggers an routes that matches the current path
    */
-  init() {
+  init(initialPath?: string) {
+    if (initialPath) {
+      this.history.replace(initialPath);
+    }
     let oldPath = this.history.location.pathname;
     this.history.listen((location, action) => {
       this.trigger({ oldPath: oldPath, newPath: location.pathname, search: location.search })
       oldPath = location.pathname;
     });
-    return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
+
+    if (this.config.triggerOnInit !== false) {
+      return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
+    }
   }
 
   navigate(path: string, replace?: boolean) {
