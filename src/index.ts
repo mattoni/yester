@@ -66,7 +66,10 @@ export class Router {
   /**
    * Runs through the config and triggers an routes that matches the current path
    */
-  init() {
+  init(initialPath?: string) {
+    if (initialPath) {
+      this.history.replace(initialPath);
+    }
     let oldPath = this.history.location.pathname;
     this.history.listen((location, action) => {
       this.trigger({ oldPath: oldPath, newPath: location.pathname, search: location.search })
