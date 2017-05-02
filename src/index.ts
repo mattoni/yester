@@ -69,7 +69,11 @@ export class Router {
   init() {
     let oldPath = this.history.location.pathname;
     this.history.listen((location, action) => {
-      this.trigger({ oldPath: oldPath, newPath: location.pathname, search: location.search })
+      this.trigger({
+        oldPath,
+        newPath: location.pathname,
+        search: location.search
+      })
       oldPath = location.pathname;
     });
     return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
