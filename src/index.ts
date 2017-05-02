@@ -44,6 +44,7 @@ export interface RouteConfig {
 
 export interface RouterConfig {
   type: "hash" | "mem" | "browser";
+  disableInitialRoute?: boolean;
 }
 
 export class Router {
@@ -76,7 +77,10 @@ export class Router {
       })
       oldPath = location.pathname;
     });
-    return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
+
+    if (!this.config.disableInitialRoute) {
+      return this.trigger({ oldPath: '', newPath: this.history.location.pathname, search: this.history.location.search });
+    }
   }
 
   navigate(path: string, replace?: boolean) {
