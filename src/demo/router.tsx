@@ -2,11 +2,6 @@ import { Router, match } from '../index';
 import { routeState } from './routeState';
 import { links } from './links';
 
-console.log("MATCH", 
-  match({pattern: "/environments", path: "/environments/58e9f8bc593b6772865d532e"})
-)
-
-
 export const router = new Router([
   {
     $: links.login(),
