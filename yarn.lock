@@ -372,7 +372,7 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2.9.0, commander@^2.9.0:
+commander@2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
   dependencies:
@@ -746,9 +746,9 @@ fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2:
     mkdirp ">=0.5 0"
     rimraf "2"
 
-fuse-box@1.4.1-beta.22:
-  version "1.4.1-beta.22"
-  resolved "https://registry.yarnpkg.com/fuse-box/-/fuse-box-1.4.1-beta.22.tgz#9b9d9850de61212829f819893b153539a87c7600"
+fuse-box@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fuse-box/-/fuse-box-2.0.0.tgz#b5a712c91e2266af41b3045e6ed341d64aafb992"
   dependencies:
     acorn "^4.0.3"
     acorn-es7 "^0.1.0"
@@ -758,7 +758,6 @@ fuse-box@1.4.1-beta.22:
     base64-img "^1.0.3"
     base64-js "^1.2.0"
     chokidar "^1.6.1"
-    commander "^2.9.0"
     concat-with-sourcemaps "^1.0.4"
     escodegen "^1.8.1"
     express "^4.14.0"
@@ -768,7 +767,7 @@ fuse-box@1.4.1-beta.22:
     ieee754 "^1.1.8"
     inquirer "^3.0.6"
     mustache "^2.3.0"
-    postcss "^5.2.11"
+    postcss "^6.0.1"
     pretty-time "^0.2.0"
     prettysize "0.0.3"
     realm-utils "^1.0.8"
@@ -1104,10 +1103,6 @@ jodid25519@^1.0.0:
   resolved "https://registry.yarnpkg.com/jodid25519/-/jodid25519-1.0.2.tgz#06d4912255093419477d425633606e0e90782967"
   dependencies:
     jsbn "~0.1.0"
-
-js-base64@^2.1.9:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.1.9.tgz#f0e80ae039a4bd654b5f281fc93f04a914a7fcce"
 
 js-tokens@^3.0.0:
   version "3.0.1"
@@ -1515,12 +1510,11 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
-postcss@^5.2.11:
-  version "5.2.16"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-5.2.16.tgz#732b3100000f9ff8379a48a53839ed097376ad57"
+postcss@^6.0.1:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.2.tgz#5c4fea589f0ac3b00caa75b1cbc3a284195b7e5d"
   dependencies:
     chalk "^1.1.3"
-    js-base64 "^2.1.9"
     source-map "^0.5.6"
     supports-color "^3.2.3"
 

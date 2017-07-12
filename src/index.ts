@@ -1,6 +1,7 @@
 import { match, MatchResult, MatchResultParams } from './match';
-import { createBrowserHistory, createHashHistory, createMemoryHistory, History } from "history";
+import { createBrowserHistory, createHashHistory, createMemoryHistory, History, Location } from "history";
 export { match, MatchResult, MatchResultParams };
+
 
 export interface RouteChangeEvent {
   oldPath: string,
@@ -48,7 +49,7 @@ export interface RouterConfig {
 }
 
 export class Router {
-  private history: History;
+  public readonly history: History;
   constructor(public routes: RouteConfig[], private config: RouterConfig) {
     switch (config.type) {
       case "hash":

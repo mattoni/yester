@@ -1,6 +1,6 @@
 {
   "name": "yester",
-  "version": "0.10.0-dev.13",
+  "version": "0.10.0",
   "description": "A simple js routing solution",
   "main": "lib/index.js",
   "typings": "lib/index",
@@ -27,7 +27,7 @@
     "@types/react-dom": "^0.14.22",
     "babel-polyfill": "^6.22.0",
     "csstips": "0.0.3",
-    "fuse-box": "1.4.1-beta.22",
+    "fuse-box": "2.0.0",
     "fuse-hmr": "0.2.0",
     "gh-pages": "0.11.0",
     "mobx": "^3.0.2",
