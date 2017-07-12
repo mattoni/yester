@@ -1,5 +1,3 @@
-
-
 import { match, MatchResult, MatchResultParams } from './match';
 import { createBrowserHistory, createHashHistory, createMemoryHistory, History, Location } from "history";
 export { match, MatchResult, MatchResultParams };
