@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { navigate } from '../index';
+import { router } from './router';
 import { links } from './links';
 
 
@@ -22,7 +22,7 @@ export class RouteState {
   }
   @action logout() {
     this.loggedIn = false;
-    navigate(links.login());
+    router.navigate(links.login());
   }
 
   @observable profileId: string;

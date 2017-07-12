@@ -11,7 +11,6 @@ import * as ReactDOM from 'react-dom';
 import { routeState } from './routeState';
 import { observer } from 'mobx-react';
 import { router } from './router';
-import { link } from '../index';
 import { links } from './links';
 
 
@@ -33,8 +32,8 @@ import { Button, Alert, Vertical, Horizontal, AlertSuccess } from './ui/componen
 export const Nav = observer(() => {
   return <Vertical>
     {routeState.loggedIn && <Horizontal>
-      <a href={link(links.profile('dave'))}>Dave</a>
-      <a href={link(links.profile('john'))}>John</a>
+      <Link path={`${links.profile('dave')}?test=abc123`}>Dave</Link>
+      <Link path={links.profile('john')}>John</Link>
     </Horizontal>}
 
     {routeState.loggedIn && <Button onClick={() => routeState.logout()}>Logout</Button>}
@@ -54,7 +53,7 @@ export const Login = observer(() =>
   <Vertical>
     <h3>Login Page</h3>
     {!routeState.loggedIn && <Button onClick={() => routeState.login()}>Click here to login</Button>}
-    {routeState.loggedIn && <AlertSuccess>You are logged in! Visit some profile page :)</AlertSuccess>}
+    {routeState.loggedIn && <AlertSuccess>You are logged in! Visit some profile Pages :)</AlertSuccess>}
     {routeState.loginRequiredMessage && <Alert>{routeState.loginRequiredMessage}</Alert>}
     <Nav />
   </Vertical>
@@ -96,6 +95,5 @@ router.init();
 forceRenderStyles();
 
 /** Set stateful modules */
-import { setStatefulModules } from 'fuse-hmr';
-declare var FuseBox: any;
-setStatefulModules(FuseBox, ['routeState'])
+import { setStatefulModules } from 'fuse-box/modules/fuse-hmr';
+setStatefulModules((n) => /routeState/.test(n));

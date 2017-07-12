@@ -25,4 +25,4 @@ export const router = new Router([
     }
   },
   { $: '*', enter: () => routeState.setRoute('login') },
-]);
+], {type: "browser"});

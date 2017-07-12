@@ -5,19 +5,22 @@
   "main": "lib/index.js",
   "typings": "lib/index",
   "scripts": {
-    "demo": "node fuse production",
-    "demo:live": "node fuse dev",
+    "demo": "ts-node fuse.ts production",
+    "demo:live": "ts-node fuse.ts dev",
     "build": "tsc -p .",
     "unittest": "mocha ./lib/tests/**/*.js",
     "test": "npm run build && npm run unittest",
     "preversion": "npm run build",
     "postversion": "git push --follow-tags && npm publish",
     "start": "npm run build -- -w & npm run unittest -- --watch & npm run demo:live",
-    "publishdemo": "npm run demo && ts-node ./src/scripts/publishdemo.ts"
+    "publishdemo": "npm run demo && ts-node ./src/scripts/publishdemo.ts",
+    "prepublish": "npm run build"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/express": "^4.0.35",
+    "@types/history": "^4.5.0",
     "@types/mocha": "2.2.38",
     "@types/node": "7.0.4",
     "@types/react": "^15.0.5",
@@ -32,9 +35,12 @@
     "mocha": "3.1.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "ts-node": "2.0.0",
+    "ts-node": "^3.0.2",
     "typescript": "2.1.5",
     "typestyle": "0.26.1",
     "uglify-js": "^2.7.5"
+  },
+  "dependencies": {
+    "history": "^4.6.1"
   }
 }
