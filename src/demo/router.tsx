@@ -1,4 +1,4 @@
-import { Router } from '../index';
+import { Router, match } from '../index';
 import { routeState } from './routeState';
 import { links } from './links';
 
@@ -9,7 +9,8 @@ export const router = new Router([
   },
   {
     $: links.profile(':profileId'),
-    enter: ({ params: { profileId } }) => {
+    enter: async (match) => {
+      const { profileId } = match.params;     
       routeState.setRoute('profile');
       routeState.setProfile(profileId);
     },
@@ -19,6 +20,9 @@ export const router = new Router([
         return { redirect: links.login() };
       }
     },
+    beforeLeave: (match) => {
+      console.log("You have left: ", match.oldPath, "and are going to: ", match.newPath);
+    }
   },
   { $: '*', enter: () => routeState.setRoute('login') },
 ]);

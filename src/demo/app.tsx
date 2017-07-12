@@ -14,6 +14,8 @@ import { router } from './router';
 import { link } from '../index';
 import { links } from './links';
 
+
+
 /** 
  * Some page CSS customizations.
  * Note: Creating componentized CSS would detract from the points of the demo
@@ -65,6 +67,12 @@ export const Profile = observer(({ profileId }: { profileId: string }) =>
   </Vertical>
 );
 
+/**
+ * Example of how a link component could be implemented
+ */
+const Link = ({path, replace, children}: {path: string, replace?: boolean, children?: any}) => {
+  return <a href={path} onClick={(e) => router.handleAnchorClick(e.nativeEvent, replace, path)}>{children}</a>;  
+}
 
 
 /**
